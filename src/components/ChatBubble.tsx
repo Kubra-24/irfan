@@ -1,0 +1,68 @@
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+
+interface ChatBubbleProps {
+  message: string;
+  type: "user" | "ai";
+  timestamp?: string;
+}
+
+export const ChatBubble = ({ message, type, timestamp }: ChatBubbleProps) => {
+  const isUser = type === "user";
+
+  return (
+    <View style={[styles.container, isUser ? styles.justifyEnd : styles.justifyStart]}>
+      <View style={styles.bubbleWrapper}>
+        <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleAI]}>
+          <Text style={styles.messageText}>{message}</Text>
+        </View>
+        {timestamp && <Text style={styles.timestamp}>{timestamp}</Text>}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    marginBottom: 16,
+    flexDirection: "row",
+  },
+  justifyEnd: {
+    justifyContent: "flex-end",
+  },
+  justifyStart: {
+    justifyContent: "flex-start",
+  },
+  bubbleWrapper: {
+    flexDirection: "column",
+    gap: 4, // gap henüz RN’da resmi desteklenmez, yerine margin kullan
+  },
+  bubble: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    maxWidth: "80%",
+  },
+  bubbleUser: {
+    backgroundColor: "#336699",
+    alignSelf: "flex-end",
+    borderTopRightRadius: 0,
+  },
+  bubbleAI: {
+    backgroundColor: "#e5e5ea",
+    alignSelf: "flex-start",
+    borderTopLeftRadius: 0,
+  },
+  messageText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#000",
+  },
+  timestamp: {
+    fontSize: 12,
+    color: "#999",
+    paddingHorizontal: 8,
+    marginTop: 2,
+  },
+});
