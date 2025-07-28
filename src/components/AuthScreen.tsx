@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native";
+import { View, Image, ActivityIndicator, Alert, StyleSheet } from "react-native";
 import { useAuth } from "../hooks/useAuth";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+
 const irfanLogo = require("../assets/irfan-logo.png");
 
 interface AuthScreenProps {
@@ -29,22 +33,25 @@ export const AuthScreen = ({ onSuccess }: AuthScreenProps) => {
       if (!error) {
         onSuccess();
       }
-    } catch (error) {
-      // Hata yönetimi auth hook'ta
+    } catch {
+      // Hata yönetimi useAuth içinde yapılır
     }
   };
+
+  const isDisabled = loading || !email.trim() || !password.trim();
 
   return (
     <View style={styles.container}>
       <Image source={irfanLogo} style={styles.logo} />
 
-      <Text style={styles.arabicTitle}>بسم الله الرحمن الرحيم</Text>
-      <Text style={styles.title}>İrfan'a Giriş</Text>
-      <Text style={styles.subtitle}>{isSignUp ? 'Yeni hesap oluşturun' : 'Hesabınıza giriş yapın'}</Text>
+      <Label style={styles.arabicTitle}>بسم الله الرحمن الرحيم</Label>
+      <Label style={styles.title}>İrfan'a Giriş</Label>
+      <Label style={styles.subtitle}>
+        {isSignUp ? "Yeni hesap oluşturun" : "Hesabınıza giriş yapın"}
+      </Label>
 
-      <Text style={styles.label}>E-posta Adresi</Text>
-      <TextInput
-        style={styles.input}
+      <Label>E-posta Adresi</Label>
+      <Input
         placeholder="ornek@email.com"
         keyboardType="email-address"
         autoCapitalize="none"
@@ -52,33 +59,36 @@ export const AuthScreen = ({ onSuccess }: AuthScreenProps) => {
         onChangeText={setEmail}
       />
 
-      <Text style={styles.label}>Şifre</Text>
-      <TextInput
-        style={styles.input}
+      <Label>Şifre</Label>
+      <Input
         placeholder="••••••••"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
-      {isSignUp && <Text style={styles.note}>En az 6 karakter olmalıdır</Text>}
 
-      <TouchableOpacity
-        style={[styles.button, (loading || !email.trim() || !password.trim()) && styles.buttonDisabled]}
+      {isSignUp && <Label style={styles.note}>En az 6 karakter olmalıdır</Label>}
+
+      <Button
+        variant="default"
+        size="lg"
         onPress={handleSubmit}
-        disabled={loading || !email.trim() || !password.trim()}
+        disabled={isDisabled}
+        style={isDisabled ? [styles.button, styles.buttonDisabled] : [styles.button]}
+        textStyle={styles.buttonText}
       >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>{isSignUp ? 'Hesap Oluştur' : 'Giriş Yap'}</Text>
-        )}
-      </TouchableOpacity>
+        {loading ? <ActivityIndicator color="#fff" /> : isSignUp ? "Hesap Oluştur" : "Giriş Yap"}
+      </Button>
 
-      <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)} style={styles.toggleButton}>
-        <Text style={styles.toggleText}>
-          {isSignUp ? 'Zaten hesabınız var mı? Giriş yapın' : 'Hesabınız yok mu? Kayıt olun'}
-        </Text>
-      </TouchableOpacity>
+      <Button
+        variant="link"
+        size="default"
+        onPress={() => setIsSignUp(!isSignUp)}
+        style={styles.toggleButton}
+        textStyle={styles.toggleText}
+      >
+        {isSignUp ? "Zaten hesabınız var mı? Giriş yapın" : "Hesabınız yok mu? Kayıt olun"}
+      </Button>
     </View>
   );
 };
@@ -102,12 +112,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#336699",
     fontFamily: "Arial",
+    marginBottom: 8,
   },
   title: {
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
-    marginTop: 8,
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
@@ -115,34 +126,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 24,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
-    marginBottom: 6,
-    color: "#444",
-  },
-  input: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
   note: {
     fontSize: 12,
     color: "#888",
     marginBottom: 12,
   },
   button: {
-    backgroundColor: "#336699",
-    height: 48,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
+    marginTop: 8,
   },
   buttonDisabled: {
-    backgroundColor: "#999",
+    opacity: 0.5,
   },
   buttonText: {
     color: "#fff",
@@ -151,7 +144,7 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     marginTop: 16,
-    alignItems: "center",
+    alignSelf: "center",
   },
   toggleText: {
     color: "#336699",

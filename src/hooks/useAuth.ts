@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-// Alias yerine göreceli yol kullandım, dosya yapına göre bunu ayarla
+// src/hooks/useAuth.ts
+import { useState, useEffect } from "react";
+import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "../integrations/supabase/client";
 import { useToast } from "./usetoast";
 
@@ -11,13 +11,11 @@ export const useAuth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -31,30 +29,12 @@ export const useAuth = () => {
   const signUp = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const redirectUrl = `${window.location.origin}/`;
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-        },
-      });
-
+      const { error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
-
-      toast({
-        title: "Kayıt Başarılı",
-        description: "Hesabınız oluşturuldu ve giriş yapıldı.",
-      });
-
+      toast({ title: "Kayıt Başarılı", description: "Hesabınız oluşturuldu." });
       return { error: null };
     } catch (error: any) {
-      toast({
-        title: "Kayıt Hatası",
-        description: error.message,
-       
-      });
+      toast({ title: "Kayıt Hatası", description: error.message });
       return { error };
     } finally {
       setLoading(false);
@@ -64,25 +44,12 @@ export const useAuth = () => {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-
-      toast({
-        title: "Giriş Başarılı",
-        description: "Hoş geldiniz!",
-      });
-
+      toast({ title: "Giriş Başarılı", description: "Hoş geldiniz!" });
       return { error: null };
     } catch (error: any) {
-      toast({
-        title: "Giriş Hatası",
-        description: error.message,
-   
-      });
+      toast({ title: "Giriş Hatası", description: error.message });
       return { error };
     } finally {
       setLoading(false);
@@ -93,26 +60,11 @@ export const useAuth = () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-
-      toast({
-        title: "Çıkış Yapıldı",
-        description: "Güvenle çıkış yaptınız.",
-      });
+      toast({ title: "Çıkış Yapıldı", description: "Güvenle çıkış yaptınız." });
     } catch (error: any) {
-      toast({
-        title: "Çıkış Hatası",
-        description: error.message,
-       
-      });
+      toast({ title: "Çıkış Hatası", description: error.message });
     }
   };
 
-  return {
-    user,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-  };
+  return { user, session, loading, signUp, signIn, signOut };
 };

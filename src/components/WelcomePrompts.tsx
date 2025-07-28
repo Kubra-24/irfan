@@ -1,8 +1,6 @@
+// src/components/WelcomePrompts.tsx
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, I18nManager } from "react-native";
-import { Button } from "./ui/button";
-import { someUtil } from "../lib/utils";
- 
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from "react-native";
 
 interface WelcomePromptsProps {
   onSelectPrompt: (prompt: string) => void;
@@ -31,40 +29,36 @@ const prompts = [
   }
 ];
 
-export const WelcomePrompts = ({ onSelectPrompt }: WelcomePromptsProps) => {
+export default function WelcomePrompts({ onSelectPrompt }: WelcomePromptsProps) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>İrfan'a Hoş Geldiniz</Text>
-        <Text style={styles.arabicTitle} >
-          بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
-        </Text>
-        <Text style={styles.subtitle}>
-          İslami bilgiler için yapay zeka destekli rehberiniz
-        </Text>
+        <Text style={styles.arabicTitle}>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</Text>
+        <Text style={styles.subtitle}>İslami bilgiler için yapay zeka destekli rehberiniz</Text>
       </View>
 
       <View style={styles.grid}>
-        {prompts.map((prompt, index) => (
+        {prompts.map((p, i) => (
           <TouchableOpacity
-            key={index}
+            key={i}
             style={styles.card}
             activeOpacity={0.8}
-            onPress={() => onSelectPrompt(prompt.prompt)}
+            onPress={() => onSelectPrompt(p.prompt)}
           >
             <View>
-              <Text style={styles.cardTitle}>{prompt.title}</Text>
-              <Text style={styles.cardSubtitle}>{prompt.subtitle}</Text>
+              <Text style={styles.cardTitle}>{p.title}</Text>
+              <Text style={styles.cardSubtitle}>{p.subtitle}</Text>
             </View>
           </TouchableOpacity>
         ))}
       </View>
     </ScrollView>
   );
-};
+}
 
 const { width } = Dimensions.get("window");
-const cardWidth = (width - 48) / 2 - 8; // margin ve padding hesaba katıldı
+const cardWidth = (width - 48) / 2 - 8;
 
 const styles = StyleSheet.create({
   container: {
@@ -72,7 +66,7 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff", // isteğe bağlı
+    backgroundColor: "#fff",
   },
   header: {
     marginBottom: 32,
@@ -83,9 +77,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#000",
     marginBottom: 8,
-    // glow-text için shadow ekleyebilirsin
     textShadowColor: '#336699',
-    textShadowOffset: {width: 0, height: 0},
+    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
   arabicTitle: {
@@ -93,8 +86,8 @@ const styles = StyleSheet.create({
     color: "#336699",
     marginBottom: 12,
     textAlign: "center",
-    writingDirection: "rtl", // Arapça için RTL
-    fontFamily: "Arial", // Arapça font eklemelisin
+    writingDirection: "rtl",
+    fontFamily: "Arial",
   },
   subtitle: {
     fontSize: 18,
@@ -106,18 +99,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 16, // RN 0.70+ destekliyor, yoksa margin kullanabilirsin
+    gap: 16,
   },
   card: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)", // glass-panel etkisi için yarı saydam
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderWidth: 1,
-    borderColor: "rgba(51, 102, 153, 0.2)", // border-glass-border/30 efekti
+    borderColor: "rgba(51, 102, 153, 0.2)",
     borderRadius: 12,
     padding: 20,
     width: cardWidth,
     margin: 8,
     justifyContent: "flex-start",
-    // Scale on hover yok, istersen react-native-animatable ile ekleyebilirsin
   },
   cardTitle: {
     fontWeight: "600",
