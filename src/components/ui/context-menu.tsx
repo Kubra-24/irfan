@@ -1,4 +1,3 @@
-// src/components/ui/context-menu.tsx
 
 import React, { useState } from "react";
 import {
@@ -48,7 +47,6 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ triggerLabel, menuItems }) =>
         animationType="fade"
         onRequestClose={closeMenu}
       >
-        {/* Dışa basınca menüyü kapat */}
         <Pressable style={styles.overlay} onPress={closeMenu} />
 
         <View style={styles.menuContainer}>

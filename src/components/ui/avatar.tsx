@@ -38,7 +38,7 @@ const Avatar: React.FC<AvatarProps> = ({
 const styles = StyleSheet.create({
   container: {
     overflow: "hidden",
-    backgroundColor: "#ccc", // muted background benzeri
+    backgroundColor: "#ccc", 
     justifyContent: "center",
     alignItems: "center",
   },

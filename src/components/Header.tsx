@@ -33,8 +33,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "rgba(255, 255, 255, 0.9)", // yarı saydam beyaz
-    borderBottomWidth: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderBottomColor: "rgba(120, 120, 120, 0.2)",
     flexDirection: "row",
     alignItems: "center",

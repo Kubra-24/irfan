@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, LayoutAnimation, Platform, UIManager } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-// Android için LayoutAnimation'u etkinleştir
+
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -16,7 +16,7 @@ export function AccordionItem({ title, children }: AccordionItemProps) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    // Layout animasyonunu çalıştır
+    // layout animasyonunu çalıştır
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   }, [open]);
 
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: "#333",
-    // transitionProperty ve transitionDuration kaldırıldı
+    
   },
   content: {
     paddingHorizontal: 16,

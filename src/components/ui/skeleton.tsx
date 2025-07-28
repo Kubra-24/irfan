@@ -33,7 +33,7 @@ export const Skeleton = ({ style }: SkeletonProps) => {
 
 const styles = StyleSheet.create({
   skeleton: {
-    backgroundColor: "#e5e7eb", // Tailwind "bg-muted"
+    backgroundColor: "#e5e7eb",
     borderRadius: 8,
     height: 20,
     width: "100%",

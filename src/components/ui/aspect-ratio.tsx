@@ -2,7 +2,7 @@ import React from "react";
 import { View, ViewProps, StyleProp, ViewStyle } from "react-native";
 
 interface AspectRatioProps extends ViewProps {
-  ratio?: number; // genişlik/yükseklik oranı, default 1 (kare)
+  ratio?: number; 
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
 }

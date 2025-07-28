@@ -60,11 +60,7 @@ function getToggleStyles(selected: boolean, variant: Variant, size: Size) {
     flexDirection: "row",
     borderWidth: variant === "outline" ? 1 : 0,
     borderColor: variant === "outline" ? (selected ? "#4f46e5" : "#d1d5db") : "transparent",
-    backgroundColor: selected
-      ? "#4f46e5"
-      : variant === "default"
-      ? "transparent"
-      : "transparent",
+    backgroundColor: selected ? "#4f46e5" : "transparent", 
     paddingHorizontal: 12,
   };
 

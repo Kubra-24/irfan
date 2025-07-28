@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
     borderColor: "#ccc",
-    backgroundColor: "#f3f4f6", // muted bg
+    backgroundColor: "#f3f4f6", 
   },
   tableBody: {},
   tableFooter: {
     borderTopWidth: 1,
     borderColor: "#ccc",
-    backgroundColor: "#e5e7eb", // muted bg variant
+    backgroundColor: "#e5e7eb", 
   },
   tableRow: {
     flexDirection: "row",
@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     fontWeight: "600",
-    color: "#6b7280", // muted-foreground
+    color: "#6b7280", 
     textAlign: "left",
   },
   tableCell: {
     flex: 1,
     padding: 12,
     textAlign: "left",
-    color: "#111827", // foreground
+    color: "#111827", 
   },
   tableCaption: {
     marginTop: 8,

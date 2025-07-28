@@ -16,7 +16,7 @@ export const OTPInput = ({
 }: OTPInputProps) => {
   const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
 
-  // refs dizisini length kadar başlatıyoruz
+  
   const inputsRef = useRef<Array<TextInput | null>>(
     Array(length).fill(null)
   );
@@ -50,7 +50,7 @@ export const OTPInput = ({
           <TextInput
             key={i}
             ref={(ref) => {
-              inputsRef.current[i] = ref; // sadece atama, dönüş yok
+              inputsRef.current[i] = ref;
             }}
             style={[styles.input, inputStyle]}
             keyboardType="number-pad"
@@ -77,6 +77,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 8,
     fontSize: 20,
-    marginRight: 10, // gap yerine
+    marginRight: 10,
   },
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, GestureResponderEvent } from "react-native";
-import { ChevronRight, MoreHorizontal } from "lucide-react-native"; // veya react-native-vector-icons kullanabilirsin
+import { ChevronRight, MoreHorizontal } from "lucide-react-native"; 
 
 interface BreadcrumbProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ interface BreadcrumbProps {
 export function Breadcrumb({ children, accessibilityLabel = "breadcrumb navigation" }: BreadcrumbProps) {
   return (
     <View
-      // accessibilityRole="navigation" React Native bunu desteklemiyor, kaldırdım
+      
       accessibilityLabel={accessibilityLabel}
       style={styles.nav}
     >
@@ -48,7 +48,7 @@ export function BreadcrumbLink({ onPress, children, disabled = false, style }: B
 export function BreadcrumbPage({ children }: { children: React.ReactNode }) {
   return (
     <Text
-      accessibilityState={{ selected: true }} // seçili sayfa olarak belirtmek için bu kullanılır
+      accessibilityState={{ selected: true }} 
       style={styles.currentPage}
     >
       {children}
@@ -82,23 +82,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
-    // gap React Native <0.71 sürümlerde desteklenmez, alternatif marginRight kullan
+    
   },
   item: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 8, // gap alternatifi
+    marginRight: 8, 
   },
   link: {
-    color: "#6b7280", // muted-foreground benzeri
+    color: "#6b7280", 
     fontSize: 14,
   },
   disabledLink: {
-    color: "#374151", // text-foreground
+    color: "#374151", 
     fontWeight: "normal",
   },
   currentPage: {
-    color: "#111827", // foreground
+    color: "#111827", 
     fontWeight: "normal",
     fontSize: 14,
   },

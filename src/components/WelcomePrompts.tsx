@@ -1,9 +1,8 @@
-// src/components/WelcomePrompts.tsx
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from "react-native";
 
 interface WelcomePromptsProps {
-  onSelectPrompt: (prompt: string) => void;
+  readonly onSelectPrompt: (prompt: string) => void;
 }
 
 const prompts = [
@@ -29,7 +28,7 @@ const prompts = [
   }
 ];
 
-export default function WelcomePrompts({ onSelectPrompt }: WelcomePromptsProps) {
+export default function WelcomePrompts({ onSelectPrompt }: Readonly<WelcomePromptsProps>) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
@@ -39,9 +38,9 @@ export default function WelcomePrompts({ onSelectPrompt }: WelcomePromptsProps) 
       </View>
 
       <View style={styles.grid}>
-        {prompts.map((p, i) => (
+        {prompts.map((p) => (
           <TouchableOpacity
-            key={i}
+            key={p.title}
             style={styles.card}
             activeOpacity={0.8}
             onPress={() => onSelectPrompt(p.prompt)}

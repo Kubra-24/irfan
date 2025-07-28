@@ -13,8 +13,8 @@ const Switch = forwardRef<RNSwitch, SwitchProps>(({ value, onValueChange, disabl
     <View style={[styles.switchContainer, style]}>
       <RNSwitch
         ref={ref}
-        trackColor={{ false: "#d1d5db", true: "#2563eb" }} // unchecked: gray-300, checked: blue-600 (örnek)
-        thumbColor={Platform.OS === "android" ? (value ? "#3b82f6" : "#f9fafb") : undefined} // iOS otomatik
+        trackColor={{ false: "#d1d5db", true: "#2563eb" }}
+        thumbColor={Platform.OS === "android" ? (value ? "#3b82f6" : "#f9fafb") : undefined} 
         ios_backgroundColor="#d1d5db"
         onValueChange={onValueChange}
         value={value}
@@ -29,14 +29,13 @@ Switch.displayName = "Switch"
 
 const styles = StyleSheet.create({
   switchContainer: {
-    // Radix'teki dış container benzeri (boyut ve border-radius)
-    width: 44, // 11 * 4 (rem to px approx)
-    height: 24, // 6 * 4
+    width: 44, 
+    height: 24, 
     borderRadius: 24 / 2,
     justifyContent: "center",
   },
   switch: {
-    // ekstra stil istersen
+   
   },
 })
 

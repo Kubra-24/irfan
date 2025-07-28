@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderTopWidth: 1,
     borderTopColor: "#ccc",
-    backgroundColor: "rgba(255,255,255,0.9)", // Cam benzeri efekt için şeffaflık
+    backgroundColor: "rgba(255,255,255,0.9)", 
     alignItems: "flex-end",
   },
   textInput: {

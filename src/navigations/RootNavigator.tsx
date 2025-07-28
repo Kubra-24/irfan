@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SplashScreen } from "../components/SplashScreen";
 import { Onboarding } from "../components/Onboarding";
 import { AuthScreen } from "../components/AuthScreen";
-import WelcomePrompts from "../components/WelcomePrompts"; // default export olarak import
+import WelcomePrompts from "../components/WelcomePrompts";
 import { Chat } from "../pages/Chat";
 import { useAuth } from "../hooks/useAuth";
 
@@ -25,14 +25,12 @@ export default function RootNavigator() {
 
   const [showSplash, setShowSplash] = useState(true);
   const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
-  const [selectedPrompt, setSelectedPrompt] = useState<string | undefined>(undefined);
 
-  // Test amaçlı onboarding sıfırlama (gereksizse kaldırabilirsin)
+
   useEffect(() => {
-    AsyncStorage.removeItem("irfan_onboarding_complete");
+    AsyncStorage.removeItem("irfan_onboarding_complete"); //onboarding test için sürekli görünür
   }, []);
 
-  // Onboarding durumunu AsyncStorage’dan oku
   useEffect(() => {
     const checkOnboarding = async () => {
       const value = await AsyncStorage.getItem("irfan_onboarding_complete");
@@ -41,7 +39,6 @@ export default function RootNavigator() {
     checkOnboarding();
   }, []);
 
-  // Splash ekranı 1.5 saniye göster
   useEffect(() => {
     if (isFirstTime !== null && !loading) {
       const timer = setTimeout(() => setShowSplash(false), 1500);
@@ -49,7 +46,6 @@ export default function RootNavigator() {
     }
   }, [isFirstTime, loading]);
 
-  // Splash, onboarding durumu veya loading devam ediyorsa splash ekran göster
   if (showSplash || isFirstTime === null || loading) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
@@ -74,11 +70,7 @@ export default function RootNavigator() {
       <Stack.Screen
         name="Auth"
         children={({ navigation }) => (
-          <AuthScreen
-            onSuccess={() => {
-              navigation.replace("WelcomePrompt");
-            }}
-          />
+          <AuthScreen onSuccess={() => navigation.replace("WelcomePrompt")} />
         )}
       />
 
@@ -87,18 +79,13 @@ export default function RootNavigator() {
         children={({ navigation }) => (
           <WelcomePrompts
             onSelectPrompt={(prompt) => {
-              setSelectedPrompt(prompt);
               navigation.replace("Chat", { initialPrompt: prompt });
             }}
           />
         )}
       />
 
-      <Stack.Screen
-        name="Chat"
-        component={Chat}
-        initialParams={{ initialPrompt: selectedPrompt }}
-      />
+      <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
   );
 }

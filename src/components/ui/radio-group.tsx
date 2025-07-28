@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     width: 18,
     borderRadius: 9,
     borderWidth: 2,
-    borderColor: "#3b82f6", // Tailwind: blue-500
+    borderColor: "#3b82f6", 
     alignItems: "center",
     justifyContent: "center",
   },
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#1f2937", // Tailwind: gray-800
+    color: "#1f2937", 
   },
 })

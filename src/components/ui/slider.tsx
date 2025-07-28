@@ -1,4 +1,4 @@
-// components/ui/slider-native.tsx
+
 import React from "react"
 import { View, StyleSheet } from "react-native"
 import Slider from "@react-native-community/slider"
@@ -30,8 +30,8 @@ export const SliderNative = ({
         step={step}
         onValueChange={onValueChange}
         disabled={disabled}
-        minimumTrackTintColor="#2563eb" // tailwind blue-600
-        maximumTrackTintColor="#e5e7eb" // gray-200
+        minimumTrackTintColor="#2563eb" 
+        maximumTrackTintColor="#e5e7eb" 
         thumbTintColor="#ffffff"
       />
     </View>

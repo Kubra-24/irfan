@@ -74,6 +74,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   body: {
-    // İhtiyaca göre içerik için stiller
+   
   },
 });

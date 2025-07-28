@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import { ArrowLeft, ArrowRight } from 'lucide-react-native'; // Eğer lucide-react-native yoksa, react-native-vector-icons vb. kullanabilirsin
+import { ArrowLeft, ArrowRight } from 'lucide-react-native'; 
 
 type CarouselProps = {
   data: any[];

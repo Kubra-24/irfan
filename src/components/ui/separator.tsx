@@ -18,7 +18,7 @@ export const Separator: React.FC<SeparatorProps> = ({
 }) => {
   const isHorizontal = orientation === "horizontal"
 
-  // length string ise as any ile geçici tip uyumu sağlanıyor
+
   const lengthValue = typeof length === "string" ? (length as any) : length
 
   return (

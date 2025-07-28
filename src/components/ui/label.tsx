@@ -3,7 +3,7 @@ import { Text, TextProps, StyleSheet } from "react-native";
 
 interface LabelProps extends TextProps {
   disabled?: boolean;
-  className?: any; // Eğer ekstra stil geçmek istersen
+  
 }
 
 export const Label = React.forwardRef<Text, LabelProps>(
@@ -24,10 +24,9 @@ Label.displayName = "Label";
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 14, // text-sm karşılığı yaklaşık
-    fontWeight: "500", // medium
-    lineHeight: 18, // leading-none gibi sıkı satır aralığı
-    color: "#000", // default siyah, istersen tema ile değiştirilebilir
+    fontSize: 14,
+    fontWeight: "500", 
+    color: "#000", 
   },
   disabled: {
     opacity: 0.7,

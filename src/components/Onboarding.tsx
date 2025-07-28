@@ -69,26 +69,30 @@ export const Onboarding = ({ onComplete }: OnboardingProps) => {
       <Text style={styles.description}>{slide.description}</Text>
 
       <View style={styles.pagination}>
-        {slides.map((_, i) => (
+        {slides.map((slide) => (
           <View
-            key={i}
+            key={slide.id}
             style={[
               styles.dot,
-              i === currentSlide ? styles.activeDot : styles.inactiveDot,
+              slide.id - 1 === currentSlide ? styles.activeDot : styles.inactiveDot,
             ]}
           />
         ))}
       </View>
 
       <View style={styles.navButtons}>
-        <TouchableOpacity onPress={prevSlide} disabled={currentSlide === 0} style={[styles.navButton, currentSlide === 0 && styles.disabled]}>
-          <ArrowLeft size={20} color={currentSlide === 0 ? "#ccc" : "#000"} />
+        <TouchableOpacity
+          onPress={prevSlide}
+          disabled={currentSlide === 0}
+          style={[styles.navButton, currentSlide === 0 && styles.disabled]}
+        >
+          <ArrowLeft size={20} color={currentSlide === 0 ? "#fff" : "#fff"} />
           <Text style={[styles.navText, currentSlide === 0 && styles.disabledText]}>Geri</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={nextSlide} style={styles.navButton}>
           <Text style={styles.navText}>{currentSlide === slides.length - 1 ? "Başla" : "İleri"}</Text>
-          <ArrowRight size={20} color="#000" />
+          <ArrowRight size={20} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
   },
   skipButton: {
     position: "absolute",
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
   titleArabic: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#336699",
+    color: "#F2AE30",
     fontFamily: "Arial",
     textAlign: "center",
     marginBottom: 4,
@@ -133,7 +137,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#000",
+    color: "#fff",
     marginBottom: 12,
   },
   subtitle: {

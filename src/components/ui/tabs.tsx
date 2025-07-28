@@ -8,7 +8,7 @@ interface TabsProps {
 }
 
 interface TabsListProps {
-  children: React.ReactElement<TabsTriggerProps>[]; // sadece TabsTrigger olmalı
+  children: React.ReactElement<TabsTriggerProps>[]; 
   style?: ViewStyle;
   activeValue: string;
   onChange: (value: string) => void;
@@ -42,7 +42,7 @@ export const Tabs: React.FC<TabsProps> = ({ defaultValue = "", onValueChange, ch
   return React.Children.map(children, (child) => {
     if (!React.isValidElement(child)) return child;
 
-    // Burada çocukların tipini kesin belirtiyoruz
+    
     return React.cloneElement(child as React.ReactElement<any>, {
       activeValue,
       onChange: handleChange,
@@ -56,7 +56,7 @@ export const TabsList: React.FC<TabsListProps> = ({ children, style, activeValue
     <View style={[styles.tabsList, style]}>
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) return child;
-        // child kesin TabsTrigger, tipi de uyuyor
+        
         return React.cloneElement(child as React.ReactElement<TabsTriggerProps>, { activeValue, onPress: onChange });
       })}
     </View>

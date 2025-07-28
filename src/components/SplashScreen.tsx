@@ -79,6 +79,13 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
     };
   }, [bismillahOpacity, logoOpacity, onComplete, dot1Anim, dot2Anim, dot3Anim]);
 
+  // Animasyonlar ve key için diziyi oluşturduk, key benzersiz string oldu
+  const dots = [
+    { anim: dot1Anim, key: "dot-1" },
+    { anim: dot2Anim, key: "dot-2" },
+    { anim: dot3Anim, key: "dot-3" },
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -101,9 +108,9 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
 
       {/* Animated Loading indicator */}
       <View style={styles.loadingDots}>
-        {[dot1Anim, dot2Anim, dot3Anim].map((anim, index) => (
+        {dots.map(({ anim, key }) => (
           <Animated.View
-            key={index}
+            key={key}
             style={[
               styles.dot,
               {

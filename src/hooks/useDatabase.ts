@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from "../integrations/supabase/client";
 import { useToast } from '../hooks/usetoast';
 
-// Null gelebilecek alanlar için `| null` eklendi
+
 interface ChatSession {
   id: string;
   title: string;
@@ -18,7 +18,7 @@ interface Message {
   created_at: string;
 }
 
-// `email` ve `display_name` null gelebilir
+
 interface Profile {
   id: string;
   email: string | null;

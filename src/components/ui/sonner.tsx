@@ -33,7 +33,7 @@ export const Toaster = () => {
   return <Toast config={toastConfig} />
 }
 
-export { Toast } // Toast.show() için dışa aktarım
+export { Toast } 
 
 const styles = StyleSheet.create({
   toast: {

@@ -46,23 +46,23 @@ const styles = StyleSheet.create<Style>({
     padding: 16,
   },
   default: {
-    backgroundColor: "#f9fafb", // örn: bg-background (light gray)
-    borderColor: "#d1d5db", // border-gray-300
+    backgroundColor: "#f9fafb", 
+    borderColor: "#d1d5db", 
   },
   destructive: {
-    backgroundColor: "#fee2e2", // bg-red-100
-    borderColor: "#dc2626", // border-red-600
+    backgroundColor: "#fee2e2", 
+    borderColor: "#dc2626", 
   },
   title: {
     marginBottom: 4,
     fontWeight: "600",
     fontSize: 16,
-    color: "#111827", // text-foreground (dark)
+    color: "#111827", 
   },
   description: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#6b7280", // text-muted (gray)
+    color: "#6b7280", 
   },
 });
 

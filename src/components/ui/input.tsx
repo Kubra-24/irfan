@@ -10,7 +10,7 @@ const Input = forwardRef<TextInput, InputProps>(({ style, ...props }, ref) => {
       style={[styles.input, style]}
       {...props}
       placeholderTextColor="#888"
-      editable={props.editable !== false}  // Düzeltilmiş
+      editable={props.editable !== false} 
     />
   );
 });

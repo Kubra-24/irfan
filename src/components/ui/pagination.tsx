@@ -9,7 +9,7 @@ type PaginationProps = {
 };
 
 export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  // Basit sayfa dizisi oluşturma (ör: 1 ... 4 5 6 ... 10)
+ 
   const pages = [];
 
   if (totalPages <= 7) {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   activePage: {
-    backgroundColor: "#2563eb", // Tailwind blue-600
+    backgroundColor: "#2563eb", 
   },
   activePageText: {
     color: "white",

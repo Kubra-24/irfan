@@ -6,9 +6,9 @@ import {
   StyleSheet,
   Animated,
 } from "react-native";
-import { ChevronDown } from "lucide-react-native"; // React Native için lucide-react varsa kullan
+import { ChevronDown } from "lucide-react-native";
 
-// Tek menü öğesi örneği, Dropdown menü mantığı
+
 export function NavigationMenu({ children }: { children: React.ReactNode }) {
   return <View style={styles.menuContainer}>{children}</View>;
 }
@@ -58,7 +58,7 @@ export function NavigationMenuContent({
   visible: boolean;
   children: React.ReactNode;
 }) {
-  // Basit görünürlük kontrolü. İstersen animasyon ekleyebilirsin.
+  
   if (!visible) return null;
   return <View style={styles.menuContent}>{children}</View>;
 }

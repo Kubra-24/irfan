@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   bubbleWrapper: {
     flexDirection: "column",
-    gap: 4, // gap henüz RN’da resmi desteklenmez, yerine margin kullan
+    gap: 4,
   },
   bubble: {
     paddingHorizontal: 12,

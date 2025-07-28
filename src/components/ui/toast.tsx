@@ -29,12 +29,12 @@ export default function AppToast() {
 
 const styles = StyleSheet.create({
   success: {
-    borderLeftColor: "#22c55e", // Tailwind green-500
-    backgroundColor: "#ecfdf5", // green-50
+    borderLeftColor: "#22c55e", 
+    backgroundColor: "#ecfdf5",
   },
   error: {
-    borderLeftColor: "#ef4444", // Tailwind red-500
-    backgroundColor: "#fef2f2", // red-50
+    borderLeftColor: "#ef4444", 
+    backgroundColor: "#fef2f2",
   },
   content: {
     paddingHorizontal: 15,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   successText1: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#166534", // green-800
+    color: "#166534", 
   },
   successText2: {
     fontSize: 13,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   errorText1: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#991b1b", // red-800
+    color: "#991b1b",
   },
   errorText2: {
     fontSize: 13,

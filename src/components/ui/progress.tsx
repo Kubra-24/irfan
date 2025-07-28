@@ -6,7 +6,7 @@ interface ProgressProps extends ViewProps {
 }
 
 const Progress = React.forwardRef<View, ProgressProps>(({ value, style, ...props }, ref) => {
-  const progress = Math.min(Math.max(value, 0), 100) // 0-100 arası sınırla
+  const progress = Math.min(Math.max(value, 0), 100) // 0-100 arası sınırr
 
   return (
     <View
@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
   root: {
     height: 16,
     width: "100%",
-    backgroundColor: "#e0e0e0", // bg-secondary benzeri
+    backgroundColor: "#e0e0e0",
     borderRadius: 9999,
     overflow: "hidden",
   },
   indicator: {
     height: "100%",
-    backgroundColor: "#3b82f6", // bg-primary benzeri (mavi)
+    backgroundColor: "#3b82f6",
     borderRadius: 9999,
    
   },

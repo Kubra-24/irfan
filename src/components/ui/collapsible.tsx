@@ -22,7 +22,7 @@ export function Collapsible({ children, trigger, initiallyOpen = false }: Collap
 
   const heightInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 200], // içerik yüksekliği max 200
+    outputRange: [0, 200], // içerik yüksekliği
   })
 
   return (

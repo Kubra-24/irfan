@@ -1,13 +1,12 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Calendar as RNCalendar } from "react-native-calendars";
-import Icon from "react-native-vector-icons/MaterialIcons"; // veya tercih ettiğin ikon paketi
+import Icon from "react-native-vector-icons/MaterialIcons"; 
 
-import { cn } from '../../lib/utils'; // 'calendar.tsx' dosyasının konumuna göre ayarla
+import { cn } from '../../lib/utils'; 
 
 
-// buttonVariants yerine React Native StyleSheet kullanılır
-// Eğer buttonVariants özel bir şey yapıyorsa, buraya uygun stil ekleyebilirsin
+
 
 type CalendarProps = React.ComponentProps<typeof RNCalendar>;
 
@@ -29,7 +28,7 @@ function Calendar({ style, ...props }: CalendarProps) {
           arrowColor: "#3b82f6",
           monthTextColor: "#000",
           indicatorColor: "#3b82f6",
-          // Diğer stil ayarları buraya eklenebilir
+          
         }}
         renderArrow={(direction) =>
           direction === "left" ? (
@@ -46,7 +45,7 @@ function Calendar({ style, ...props }: CalendarProps) {
 const styles = StyleSheet.create({
   container: {
     padding: 12,
-    // React Native'de padding veya margin gibi stil ayarları buraya gelir
+    
   },
 });
 

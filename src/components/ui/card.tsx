@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccc", // bg-card yerine backgroundColor verdim
-    backgroundColor: "#fff", // bg-card
+    borderColor: "#ccc", 
+    backgroundColor: "#fff", 
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3, // Android shadow
+    elevation: 3, 
   },
   cardHeader: {
     padding: 24,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   cardDescription: {
     fontSize: 14,
-    color: "#666", // text-muted-foreground
+    color: "#666", 
   },
   cardContent: {
     padding: 24,

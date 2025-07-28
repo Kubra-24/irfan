@@ -12,26 +12,26 @@ interface BadgeProps {
 
 const colors = {
   default: {
-    backgroundColor: "#3b82f6", // primary bg
+    backgroundColor: "#3b82f6", 
     borderColor: "transparent",
-    textColor: "#ffffff", // primary foreground
-    hoverBg: "#2563eb", // primary/80 hover color (not used in RN)
+    textColor: "#ffffff", 
+    hoverBg: "#2563eb", 
   },
   secondary: {
-    backgroundColor: "#64748b", // secondary bg
+    backgroundColor: "#64748b", 
     borderColor: "transparent",
-    textColor: "#f1f5f9", // secondary fg
+    textColor: "#f1f5f9", 
     hoverBg: "#475569",
   },
   destructive: {
-    backgroundColor: "#ef4444", // destructive bg
+    backgroundColor: "#ef4444", 
     borderColor: "transparent",
-    textColor: "#ffffff", // destructive fg
+    textColor: "#ffffff", 
     hoverBg: "#dc2626",
   },
   outline: {
     backgroundColor: "transparent",
-    borderColor: "#000000", // or use theme
+    borderColor: "#000000", 
     textColor: "#000000",
   },
 };
@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderRadius: 9999,
-    paddingHorizontal: 10, // approx px-2.5
-    paddingVertical: 2, // approx py-0.5
+    paddingHorizontal: 10, 
+    paddingVertical: 2, 
     alignSelf: "flex-start",
   },
   text: {
-    fontSize: 12, // text-xs
-    fontWeight: "600", // font-semibold
+    fontSize: 12, 
+    fontWeight: "600", 
   },
 });

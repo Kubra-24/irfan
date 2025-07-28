@@ -20,7 +20,7 @@ export function RNPopover({ trigger, children, popoverStyle, ...props }: RNPopov
 
       <Popover
         isVisible={isVisible}
-        from={touchableRef.current as any}  // Burada as any ile tip hatası geçildi
+        from={touchableRef.current as any}  
         onRequestClose={() => setIsVisible(false)}
         popoverStyle={[styles.popover, popoverStyle]}
       >

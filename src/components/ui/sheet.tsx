@@ -35,14 +35,14 @@ export function Sheet({
 
   useEffect(() => {
     if (visible) {
-      // Açılırken animasyon
+      // açılırken animasyon
       Animated.timing(animation, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
       }).start();
     } else {
-      // Kapanırken animasyon
+      // kapanırken animasyon
       Animated.timing(animation, {
         toValue: 0,
         duration: 300,
@@ -51,13 +51,13 @@ export function Sheet({
     }
   }, [visible, animation]);
 
-  // Panel sağdan içeri girecek: translateX 0’dan width kadar geriye
+ 
   const translateX = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [width, 0],
   });
 
-  // Overlay opaklığı animasyonlu
+ 
   const overlayOpacity = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
