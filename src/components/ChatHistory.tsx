@@ -33,7 +33,10 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    loadChatHistory();
+    const fetchData = async () => {
+      await loadChatHistory();
+    };
+    fetchData();
   }, []);
 
   const loadChatHistory = async () => {
@@ -69,6 +72,7 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
         ]);
       }
     } catch (error) {
+      console.error("Sohbet geçmişi yüklenirken hata:", error);
       Alert.alert("Hata", "Sohbet geçmişi yüklenirken hata oluştu.");
     }
     setIsLoading(false);
@@ -78,6 +82,7 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
     } catch (error) {
+      console.error("Sohbet geçmişi kaydedilemedi:", error);
       Alert.alert("Hata", "Sohbet geçmişi kaydedilemedi.");
     }
   };
@@ -106,7 +111,8 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
             setChatSessions([]);
             try {
               await AsyncStorage.removeItem(STORAGE_KEY);
-            } catch {
+            } catch (error) {
+              console.error("Sohbet geçmişi temizlenemedi:", error);
               Alert.alert("Hata", "Sohbet geçmişi temizlenemedi.");
             }
             toast({
@@ -142,10 +148,7 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
       </View>
 
       <TouchableOpacity
-        onPress={(e) => {
-          e.stopPropagation?.();
-          deleteChatSession(item.id);
-        }}
+        onPress={() => deleteChatSession(item.id)}
         style={styles.deleteButton}
       >
         <Ionicons name="trash-outline" size={20} color="#b22222" />
@@ -162,7 +165,12 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
         </TouchableOpacity>
 
         <View style={styles.headerTitleWrapper}>
-          <Ionicons name="chatbubble-ellipses" size={20} color="#336699" />
+          <Ionicons
+            name="chatbubble-ellipses"
+            size={20}
+            color="#336699"
+            style={styles.headerTitleIcon}
+          />
           <Text style={styles.headerTitle}>Sohbet Geçmişi</Text>
         </View>
 
@@ -214,12 +222,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   backButton: { padding: 6 },
-  headerTitleWrapper: { flexDirection: "row", alignItems: "center", gap: 6 },
-  headerTitle: { fontSize: 18, fontWeight: "600", marginLeft: 6, color: "#336699" },
+  headerTitleWrapper: { flexDirection: "row", alignItems: "center" },
+  headerTitleIcon: { marginRight: 6 },
+  headerTitle: { fontSize: 18, fontWeight: "600", color: "#336699" },
   clearAllButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
     padding: 6,
   },
   clearAllText: { color: "#b22222", fontWeight: "600", marginLeft: 4 },
@@ -259,13 +267,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     alignItems: "center",
     justifyContent: "flex-start",
-    gap: 12,
   },
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
     marginRight: 16,
-    gap: 4,
   },
   metaText: { fontSize: 12, color: "#888", marginLeft: 4 },
   deleteButton: {
