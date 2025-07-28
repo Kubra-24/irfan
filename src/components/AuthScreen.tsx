@@ -40,6 +40,13 @@ export const AuthScreen = ({ onSuccess }: AuthScreenProps) => {
 
   const isDisabled = loading || !email.trim() || !password.trim();
 
+  // 🔧 Nested ternary kaldırıldı, bağımsız hale getirildi
+  const buttonContent = loading
+    ? <ActivityIndicator color="#fff" />
+    : isSignUp
+      ? "Hesap Oluştur"
+      : "Giriş Yap";
+
   return (
     <View style={styles.container}>
       <Image source={irfanLogo} style={styles.logo} />
@@ -77,7 +84,7 @@ export const AuthScreen = ({ onSuccess }: AuthScreenProps) => {
         style={isDisabled ? [styles.button, styles.buttonDisabled] : [styles.button]}
         textStyle={styles.buttonText}
       >
-        {loading ? <ActivityIndicator color="#fff" /> : isSignUp ? "Hesap Oluştur" : "Giriş Yap"}
+        {buttonContent}
       </Button>
 
       <Button
