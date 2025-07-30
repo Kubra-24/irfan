@@ -1,5 +1,16 @@
-import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import React, { useState, useRef, useEffect, ReactNode } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+  StyleProp,
+  ViewStyle,
+  Easing,
+} from "react-native";
 import { ArrowRight, ArrowLeft } from "lucide-react-native";
 
 const slides = [
@@ -7,35 +18,58 @@ const slides = [
     id: 1,
     title: "İrfan'a Hoş Geldiniz",
     titleArabic: "أهلاً وسهلاً بكم في إرفان",
-    subtitle: "Maneviyat yolculuğunuzda size özel bir rehber",
-    description: "İslami bilgilere modern ve akıcı bir şekilde ulaşın",
+    subtitle: '"Maneviyat yolculuğunuzda size özel bir rehber"',
+    description: "İslami bilgilere modern ve akıcı bir şekilde ulaşın.",
     image: require("../assets/irfan-logo.png"),
   },
   {
     id: 2,
     title: "Keşfet ve Öğren",
     titleArabic: "اكتشف وتعلم",
-    subtitle: "Ayetleri sorgulayın, hadisleri öğrenin",
-    description: "Tefsirlerin derinliklerine inin ve İslami ilimleri keşfedin",
+    subtitle: '"Ayetleri keşfedin, hadislerle derinleşin."',
+    description: "Tefsirlerin sırlarını keşfedin, İslami ilimleri öğrenin.",
     image: require("../assets/islamic-pattern.png"),
   },
   {
     id: 3,
-    title: "Gizli İlimler Hazinesi",
+    title: "Kutsal İlimler Hazinesi",
     titleArabic: "كنز العلوم الخفية",
-    subtitle: "Hayatınızdaki anlara özel dualar",
-    description: "Manevi rehberlik ve özel durumlar için dua hazinesi",
+    subtitle: '"Hayatınızdaki anlara özel dua koleksiyonu."',
+    description: "Manevi rehberlik ve özel anlar için dua kaynağı.",
     image: require("../assets/mosque-silhouette.png"),
   },
   {
     id: 4,
     title: "Hemen Başlayın",
     titleArabic: "ابدأ الآن",
-    subtitle: "İslami bilgiler için sorularınızı sorun",
-    description: "Yapay zeka destekli rehberinizle sohbete başlayın",
+    subtitle: '"İslami bilgiye dair sorularınızı sorun."',
+    description: "Yapay zeka destekli rehberinizle sohbete başlayın.",
     image: require("../assets/irfan-logo.png"),
-  }
+  },
 ];
+
+interface GlowButtonProps {
+  children: ReactNode;
+  onPress: () => void;
+  style?: StyleProp<ViewStyle>;
+  glowOpacity: Animated.AnimatedInterpolation<number>;
+}
+
+const GlowButton = ({ children, onPress, style, glowOpacity }: GlowButtonProps) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={[styles.glowButtonContainer, style]}>
+      <Animated.View
+        style={[
+          styles.glowEffect,
+          {
+            opacity: glowOpacity,
+          },
+        ]}
+      />
+      {children}
+    </TouchableOpacity>
+  );
+};
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -43,6 +77,39 @@ interface OnboardingProps {
 
 export const Onboarding = ({ onComplete }: OnboardingProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+
+ 
+  const glowAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // glow animasyonu
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowAnim, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 0,
+          duration: 2000,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    anim.start();
+
+    return () => anim.stop();
+  }, []);
+
+  
+  const glowOpacity = glowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.3, 0.7],
+  });
+
   const slide = slides[currentSlide];
 
   const nextSlide = () => {
@@ -56,45 +123,73 @@ export const Onboarding = ({ onComplete }: OnboardingProps) => {
 
   return (
     <View style={styles.container}>
+     
       <TouchableOpacity style={styles.skipButton} onPress={onComplete}>
         <Text style={styles.skipText}>Geç</Text>
       </TouchableOpacity>
 
-      <Image source={slide.image} style={styles.image} resizeMode="contain" />
+      {/* Resim + Glow Arka Plan */}
+      <View style={styles.imageWrapper}>
+        <Animated.View style={[styles.imageGlow, { opacity: glowOpacity }]} />
+        <Image source={slide.image} style={styles.image} resizeMode="contain" />
+      </View>
 
-      <Text style={styles.titleArabic}>{slide.titleArabic}</Text>
-      <Text style={styles.title}>{slide.title}</Text>
+      <View style={styles.arabicTitleWrapper}>
+        <Text style={styles.titleArabic}>{slide.titleArabic}</Text>
+      </View>
 
-      <Text style={styles.subtitle}>{slide.subtitle}</Text>
-      <Text style={styles.description}>{slide.description}</Text>
-
+      {/* Pagination */}
       <View style={styles.pagination}>
-        {slides.map((slide) => (
+        {slides.map((s) => (
           <View
-            key={slide.id}
+            key={s.id}
             style={[
               styles.dot,
-              slide.id - 1 === currentSlide ? styles.activeDot : styles.inactiveDot,
+              s.id - 1 === currentSlide ? styles.activeDot : styles.inactiveDot,
             ]}
           />
         ))}
       </View>
 
+      {/* navigasyon Butonları */}
       <View style={styles.navButtons}>
-        <TouchableOpacity
-          onPress={prevSlide}
-          disabled={currentSlide === 0}
-          style={[styles.navButton, currentSlide === 0 && styles.disabled]}
-        >
-          <ArrowLeft size={20} color={currentSlide === 0 ? "#fff" : "#fff"} />
-          <Text style={[styles.navText, currentSlide === 0 && styles.disabledText]}>Geri</Text>
-        </TouchableOpacity>
+        {currentSlide === 0 ? (
+          <View style={{ flex: 1, alignItems: "flex-end" }}>
+            <GlowButton onPress={nextSlide} glowOpacity={glowOpacity}>
+              <ArrowRight size={20} color="#F2AE30" />
+            </GlowButton>
+          </View>
+        ) : (
+          <>
+            <GlowButton
+              onPress={prevSlide}
+              style={{ marginRight: 30 }}
+              glowOpacity={glowOpacity}
+            >
+              <ArrowLeft size={20} color="#F2AE30" />
+            </GlowButton>
 
-        <TouchableOpacity onPress={nextSlide} style={styles.navButton}>
-          <Text style={styles.navText}>{currentSlide === slides.length - 1 ? "Başla" : "İleri"}</Text>
-          <ArrowRight size={20} color="#fff" />
-        </TouchableOpacity>
+            <GlowButton onPress={nextSlide} glowOpacity={glowOpacity}>
+              <ArrowRight size={20} color="#F2AE30" />
+            </GlowButton>
+          </>
+        )}
       </View>
+
+   
+      <View style={styles.titleWrapper}>
+        <Text style={styles.title}>{slide.title}</Text>
+      </View>
+
+      <Text style={styles.subtitle}>{slide.subtitle}</Text>
+      <Text
+        style={[
+          styles.description,
+          currentSlide === 0 ? { marginBottom: 10 } : { marginBottom: 30 },
+        ]}
+      >
+        {slide.description}
+      </Text>
     </View>
   );
 };
@@ -107,7 +202,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 40,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#000",
   },
@@ -121,78 +216,113 @@ const styles = StyleSheet.create({
     color: "#666",
     fontSize: 16,
   },
-  image: {
+  imageWrapper: {
+    position: "relative",
     width: width * 0.5,
     height: width * 0.5,
-    marginBottom: 24,
+    marginBottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageGlow: {
+    position: "absolute",
+    width: 180,
+    height: 180,
+    borderRadius: 20,
+    backgroundColor: "#F2AE30",
+    shadowColor: "#F2AE30",
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 30,
+    shadowOpacity: 1,
+    elevation: 20,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 20,
+  },
+  arabicTitleWrapper: {
+    marginBottom: 25,
+    paddingHorizontal: 10,
+    alignSelf: "stretch",
   },
   titleArabic: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "700",
     color: "#F2AE30",
     fontFamily: "Arial",
     textAlign: "center",
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#fff",
-    marginBottom: 12,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#336699",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  description: {
-    fontSize: 14,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 40,
   },
   pagination: {
     flexDirection: "row",
     marginBottom: 24,
   },
   dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginHorizontal: 6,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 3,
   },
   activeDot: {
-    backgroundColor: "#336699",
-    width: 24,
-    shadowColor: "#336699",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 6,
+    backgroundColor: "#F2AE30",
   },
   inactiveDot: {
-    backgroundColor: "#ccc",
+    backgroundColor:"#CCCCCC",
   },
   navButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+    paddingHorizontal: 15,
+    marginTop: 14,
+    marginBottom: 24,
   },
-  navButton: {
-    flexDirection: "row",
+  glowButtonContainer: {
+    position: "relative",
+    justifyContent: "center",
     alignItems: "center",
+    width: 45,
+    height: 45 ,
   },
-  navText: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginHorizontal: 8,
-    color: "#000",
+  glowEffect: {
+    position: "absolute",
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    backgroundColor: "rgba(242, 174, 48, 0.4)",
+    shadowColor: "rgba(242, 174, 48, 0.9)",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  disabled: {
-    opacity: 0.5,
+  titleWrapper: {
+    marginTop: 18,
+    marginBottom: 5,
+    paddingHorizontal: 10,
+    alignSelf: "stretch",
   },
-  disabledText: {
-    color: "#aaa",
+  title: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#F2AE30",
+    textAlign: "center",
+    marginBottom: 30,
+    fontStyle: "italic",
+  },
+  subtitle: {
+    fontSize: 13.6,
+    fontWeight: "bold",
+    color:"#CCCCCC",
+    marginBottom: 10,
+    textAlign: "center",
+    fontStyle: "italic",
+  },
+  description: {
+    fontSize: 12.6,
+    color: "#666",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontStyle: "italic",
   },
 });

@@ -1,91 +1,66 @@
-// src/navigations/RootNavigator.tsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { SplashScreen } from "../components/SplashScreen";
 import { Onboarding } from "../components/Onboarding";
 import { AuthScreen } from "../components/AuthScreen";
+import { ForgotPassword } from "../components/ForgotPassword";
 import WelcomePrompts from "../components/WelcomePrompts";
-import { Chat } from "../pages/Chat";
-import { useAuth } from "../hooks/useAuth";
 
 export type RootStackParamList = {
   Splash: undefined;
   Onboarding: undefined;
   Auth: undefined;
-  WelcomePrompt: undefined;
-  Chat: { initialPrompt?: string };
+  ForgotPassword: undefined;
+  WelcomePrompts: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function RootNavigator() {
-  const { user, loading } = useAuth();
-
-  const [showSplash, setShowSplash] = useState(true);
-  const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
-
-
-  useEffect(() => {
-    AsyncStorage.removeItem("irfan_onboarding_complete"); //onboarding test için sürekli görünür
-  }, []);
-
-  useEffect(() => {
-    const checkOnboarding = async () => {
-      const value = await AsyncStorage.getItem("irfan_onboarding_complete");
-      setIsFirstTime(value === null);
-    };
-    checkOnboarding();
-  }, []);
-
-  useEffect(() => {
-    if (isFirstTime !== null && !loading) {
-      const timer = setTimeout(() => setShowSplash(false), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isFirstTime, loading]);
-
-  if (showSplash || isFirstTime === null || loading) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
-  }
-
+export const RootNavigator = () => {
   return (
-    <Stack.Navigator
-      initialRouteName={isFirstTime ? "Onboarding" : user ? "WelcomePrompt" : "Auth"}
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen
-        name="Onboarding"
-        children={({ navigation }) => (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Splash">
+        {(props) => (
+          <SplashScreen
+            {...props}
+            onComplete={() => props.navigation.navigate("Onboarding")}
+          />
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen name="Onboarding">
+        {(props) => (
           <Onboarding
-            onComplete={async () => {
-              await AsyncStorage.setItem("irfan_onboarding_complete", "true");
-              navigation.replace("Auth");
+            {...props}
+            onComplete={() => props.navigation.navigate("Auth")}
+          />
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen name="Auth">
+        {(props) => (
+          <AuthScreen
+            {...props}
+            onSuccess={() => {
+              props.navigation.navigate("WelcomePrompts");
             }}
           />
         )}
-      />
+      </Stack.Screen>
 
-      <Stack.Screen
-        name="Auth"
-        children={({ navigation }) => (
-          <AuthScreen onSuccess={() => navigation.replace("WelcomePrompt")} />
-        )}
-      />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 
-      <Stack.Screen
-        name="WelcomePrompt"
-        children={({ navigation }) => (
+      <Stack.Screen name="WelcomePrompts">
+        {(props) => (
           <WelcomePrompts
+            {...props}
             onSelectPrompt={(prompt) => {
-              navigation.replace("Chat", { initialPrompt: prompt });
+              console.log("Seçilen prompt:", prompt);
+              // chat ekranına yönlendirme eklenecek
             }}
           />
         )}
-      />
-
-      <Stack.Screen name="Chat" component={Chat} />
+      </Stack.Screen>
     </Stack.Navigator>
   );
-}
+};

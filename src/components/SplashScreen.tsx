@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, Image, StyleSheet, Animated, Easing } from "react-native";
+import { View, Text, Animated, StyleSheet, Image } from "react-native";
 
-const irfanLogo = require("../assets/irfan-logo.png");
 const bismillahCalligraphy = require("../assets/bismillah-calligraphy.png");
 
 interface SplashScreenProps {
@@ -14,11 +13,7 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
 
   const bismillahOpacity = useRef(new Animated.Value(0)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
-
-  // Loading dots için animasyon değerleri
-  const dot1Anim = useRef(new Animated.Value(0)).current;
-  const dot2Anim = useRef(new Animated.Value(0)).current;
-  const dot3Anim = useRef(new Animated.Value(0)).current;
+  const glowOpacity = useRef(new Animated.Value(0.7)).current;
 
   useEffect(() => {
     const timer1 = setTimeout(() => {
@@ -28,6 +23,21 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
         duration: 1000,
         useNativeDriver: true,
       }).start();
+
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(glowOpacity, {
+            toValue: 0.3,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(glowOpacity, {
+            toValue: 0.7,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
     }, 500);
 
     const timer2 = setTimeout(() => {
@@ -39,91 +49,37 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
       }).start();
     }, 1500);
 
-    const timer3 = setTimeout(() => onComplete(), 3500);
-
-    // Loading dots animasyonu sonsuz döngü
-    const createPulse = (anim: Animated.Value, delay: number) =>
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 500,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-            delay,
-          }),
-          Animated.timing(anim, {
-            toValue: 0,
-            duration: 500,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-        ])
-      );
-
-    const pulse1 = createPulse(dot1Anim, 0);
-    const pulse2 = createPulse(dot2Anim, 200);
-    const pulse3 = createPulse(dot3Anim, 400);
-
-    pulse1.start();
-    pulse2.start();
-    pulse3.start();
+    const timer3 = setTimeout(() => {
+      onComplete();
+    }, 3500);
 
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
-      pulse1.stop();
-      pulse2.stop();
-      pulse3.stop();
+      glowOpacity.stopAnimation();
     };
-  }, [bismillahOpacity, logoOpacity, onComplete, dot1Anim, dot2Anim, dot3Anim]);
-
-  // Animasyonlar ve key için diziyi oluşturduk, key benzersiz string oldu
-  const dots = [
-    { anim: dot1Anim, key: "dot-1" },
-    { anim: dot2Anim, key: "dot-2" },
-    { anim: dot3Anim, key: "dot-3" },
-  ];
+  }, [bismillahOpacity, logoOpacity, glowOpacity, onComplete]);
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         {showBismillah && (
-          <Animated.Image
-            source={bismillahCalligraphy}
-            style={[styles.bismillahImage, { opacity: bismillahOpacity }]}
-            resizeMode="contain"
-          />
+          <Animated.View style={[styles.bismillahWrapper, { opacity: bismillahOpacity }]}>
+            <Animated.View style={[styles.glowEffect, { opacity: glowOpacity }]} />
+            <Image source={bismillahCalligraphy} style={styles.bismillahImage} resizeMode="contain" />
+          </Animated.View>
         )}
 
         {showLogo && (
           <Animated.View style={[styles.logoContainer, { opacity: logoOpacity }]}>
-            <Image source={irfanLogo} style={styles.logoImage} />
             <Text style={styles.logoTitle}>إرفان</Text>
-            <Text style={styles.logoSubtitle}>Yapay Zeka İslami Rehberiniz</Text>
+            <View style={styles.subtitleWrapper}>
+       
+              <Text style={styles.logoSubtitle}>Yapay Zekâ Destekli İslami Rehber</Text>
+            </View>
           </Animated.View>
         )}
-      </View>
-
-      {/* Animated Loading indicator */}
-      <View style={styles.loadingDots}>
-        {dots.map(({ anim, key }) => (
-          <Animated.View
-            key={key}
-            style={[
-              styles.dot,
-              {
-                opacity: anim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }),
-                transform: [
-                  {
-                    scale: anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.5] }),
-                  },
-                ],
-              },
-            ]}
-          />
-        ))}
       </View>
     </View>
   );
@@ -132,48 +88,59 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },
   content: {
     alignItems: "center",
   },
+  bismillahWrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  glowEffect: {
+    position: "absolute",
+    width: 220,
+    height: 220,
+    borderRadius: 20,
+    backgroundColor: "#F2AE30",
+    opacity: 0.7,
+    shadowColor: "#F2AE30",
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 30,
+    shadowOpacity: 1,
+    elevation: 20,
+  },
   bismillahImage: {
-    width: 256,
-    height: 128,
-    marginBottom: 20,
+    width: 200,
+    height: 200,
+    borderRadius: 20,
   },
   logoContainer: {
     alignItems: "center",
   },
-  logoImage: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    marginBottom: 12,
-  },
   logoTitle: {
-    fontSize: 28,
+    fontSize: 35,
     fontWeight: "bold",
-    color: "#336699",
+    color: "#F2AE30",
     fontFamily: "Arial",
+    marginTop: 20,
+    fontStyle: "italic",
   },
+  subtitleWrapper: {
+    position: "relative",
+    marginTop: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+ 
   logoSubtitle: {
     fontSize: 14,
-    color: "#888",
-  },
-  loadingDots: {
-    position: "absolute",
-    bottom: 40,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 60,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "#336699",
+    color: "#CCCCCC",
+    fontStyle: "italic",
+    paddingHorizontal: 8,
+    textAlign: "center",
   },
 });
