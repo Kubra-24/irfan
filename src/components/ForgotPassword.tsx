@@ -135,7 +135,7 @@ export const ForgotPassword = ({ navigation }: any) => {
             <MaterialCommunityIcons name="arrow-left" size={24} color="#F2AE30" />
           </TouchableOpacity>
 
-          <Text style={styles.title}>{step === 1 ? "Şifremi Unuttum" : "Şifre Yenile"}</Text>
+          <Text style={styles.title}>{step === 1 ? "Şifremi Unuttum" : "Yeni Şifre Belirle"}</Text>
 
           {step === 1 && (
             <>
@@ -178,7 +178,7 @@ export const ForgotPassword = ({ navigation }: any) => {
 
           {step === 2 && (
             <>
-              {/* Sağ Üst Kapatma Butonu */}
+             
               <TouchableOpacity onPress={() => navigation.navigate("Auth")} style={styles.closeButton}>
                 <MaterialCommunityIcons name="close" size={24} color="#F2AE30" />
               </TouchableOpacity>
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
   orText: {
     marginHorizontal: 12,
-    color: "#CCCCCC",
+    color: "#666",
     fontWeight: "600",
     fontSize: 14,
   },

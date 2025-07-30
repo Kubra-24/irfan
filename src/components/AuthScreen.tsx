@@ -63,7 +63,7 @@ export const AuthScreen = (props: any) => {
       if (!error) {
         onSuccess();
       } else {
-        console.log("Sign up / Sign in error:", error);
+        console.log("Kayıt Ol/ Giriş Yap error:", error);
 
         let errorMessage = "Bir hata oluştu";
 
@@ -343,9 +343,10 @@ const styles = StyleSheet.create({
   },
   forgotButton: {},
   forgotText: {
-    color: "#bec9d3ff",
+    color:"#666",
     fontSize: 12,
     textDecorationLine: "none",
+    marginTop:-25,
   },
   authOptionsContainer: {
     alignItems: "center",
@@ -380,7 +381,7 @@ const styles = StyleSheet.create({
   },
   orText: {
     marginHorizontal: 8,
-    color: "#CCCCCC",
+    color: "#666",
     fontSize: 12,
     fontWeight: "500",
   },
