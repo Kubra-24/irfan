@@ -1,15 +1,24 @@
 {
   "expo": {
-    "name": "irfann",
-    "slug": "irfann",
+    "name": "İrfan",
+    "slug": "irfan",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "icon":  "./src/assets/irfan-logo.png",
+    "splash": {
+      "image": "./src/assets/bismillah-calligraphy.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.kubra.irfan",
+      "versionCode": 1,
+      "permissions": [],
       "edgeToEdgeEnabled": true
     }
   }

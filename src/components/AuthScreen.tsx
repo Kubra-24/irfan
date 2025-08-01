@@ -20,9 +20,7 @@ import { useAuth } from "../hooks/useAuth";
 const irfanLogo = require("../assets/irfan-logo.png");
 const googleIcon = require("../assets/social.png");
 
-export const AuthScreen = (props: any) => {
-  const { navigation, onSuccess } = props;
-
+export const AuthScreen = ({ navigation }: any) => {
   const pulseAnim = useRef(new Animated.Value(0)).current;
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -61,12 +59,9 @@ export const AuthScreen = (props: any) => {
         : await signIn(email, password);
 
       if (!error) {
-        onSuccess();
+        navigation.navigate("WelcomePrompts");
       } else {
-        console.log("Kayıt Ol/ Giriş Yap error:", error);
-
         let errorMessage = "Bir hata oluştu";
-
         const msg = (error.message || "").toLowerCase();
 
         if (msg.includes("invalid login credentials")) {
@@ -343,10 +338,10 @@ const styles = StyleSheet.create({
   },
   forgotButton: {},
   forgotText: {
-    color:"#666",
+    color: "#666",
     fontSize: 12,
     textDecorationLine: "none",
-    marginTop:-25,
+    marginTop: -25,
   },
   authOptionsContainer: {
     alignItems: "center",
