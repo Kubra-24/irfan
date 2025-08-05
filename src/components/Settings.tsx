@@ -1,26 +1,29 @@
 import React, { useState } from "react";
-import { 
-  View, 
-  Text, 
-  Image, 
-  TextInput, 
-  ScrollView, 
-  TouchableOpacity, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
   Alert,
   Linking,
+  SafeAreaView,
 } from "react-native";
-import { 
-  ArrowLeft, 
-  User, 
-  Shield, 
-  FileText, 
-  LogOut, 
+
+import {
+  User,
+  Shield,
+  FileText,
+  LogOut,
   ExternalLink,
-  Trash2
+  Trash2,
 } from "lucide-react-native";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../navigations/RootNavigator";
+import { Header } from "../components/Header";
 
 interface SettingsProps {
   onBack: () => void;
@@ -30,10 +33,10 @@ interface SettingsProps {
     display_name: string;
   };
 }
-const irfanLogo = require('../assets/irfan-logo.png');
+
 export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
   const [feedback, setFeedback] = useState("");
-
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const clearAllData = async () => {
     try {
@@ -46,8 +49,6 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
 
   const submitFeedback = () => {
     if (!feedback.trim()) return;
-
-    // Burada API çağrısı yapılabilir
     Alert.alert("Geri Bildirim Gönderildi", "Değerli geri bildiriminiz için teşekkürler!");
     setFeedback("");
   };
@@ -66,157 +67,139 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.iconButton}>
-          <ArrowLeft size={24} color="#000" />
-        </TouchableOpacity>
-        <View style={styles.headerTitle}>
-          <Image source={irfanLogo} style={styles.logo} />
-          <Text style={styles.headerText}>Ayarlar</Text>
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Header title="Ayarlar" onBack={onBack} showLogo={false} />
+
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          {/* Profil Bilgileri */}
+          <View style={styles.panel}>
+            <View style={styles.sectionHeader}>
+              <User size={20} color="#F2AE30" />
+              <Text style={styles.sectionTitle}>Profil Bilgileri</Text>
+            </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>E-posta Adresi</Text>
+              <TextInput
+                style={[styles.input, styles.disabledInput]}
+                value={userProfile?.email || ""}
+                editable={false}
+              />
+            </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Görünen Ad</Text>
+              <TextInput
+                style={[styles.input, styles.disabledInput]}
+                value={userProfile?.display_name || ""}
+                editable={false}
+              />
+            </View>
+          </View>
+
+          {/* Geri Bildirim */}
+          <View style={styles.panel}>
+            <View style={styles.sectionHeader}>
+              <FileText size={20} color="#F2AE30" />
+              <Text style={styles.sectionTitle}>Geri Bildirim</Text>
+            </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Görüş ve Önerileriniz</Text>
+              <TextInput
+                style={[styles.input, styles.textarea]}
+                placeholder="İrfan hakkındaki görüşlerinizi bizimle paylaşın..."
+                placeholderTextColor="#666"
+                multiline
+                numberOfLines={5}
+                value={feedback}
+                onChangeText={setFeedback}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={submitFeedback}
+              disabled={!feedback.trim()}
+              style={[styles.button, !feedback.trim() && styles.buttonDisabled]}
+            >
+              <Text style={styles.buttonText}>Geri Bildirim Gönder</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Hukuki */}
+          <View style={styles.panel}>
+            <View style={styles.sectionHeader}>
+              <Shield size={20} color="#F2AE30" />
+              <Text style={styles.sectionTitle}>Hukuki</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("PrivacyPolicy")}
+              style={styles.outlineButton}
+            >
+              <Text style={styles.outlineButtonText}>Gizlilik Politikası</Text>
+              <ExternalLink size={16} color="#888" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("TermsOfService")}
+              style={styles.outlineButton}
+            >
+              <Text style={styles.outlineButtonText}>Kullanım Şartları</Text>
+              <ExternalLink size={16} color="#888" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Uygulama Bilgileri */}
+          <View style={styles.panel}>
+            <Text style={styles.sectionTitle}>Uygulama Bilgileri</Text>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Versiyon</Text>
+              <Text style={styles.infoValue}>1.0.0</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Yapı</Text>
+              <Text style={styles.infoValue}>2024.1</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Son Güncelleme</Text>
+              <Text style={styles.infoValue}>23 Ocak 2025</Text>
+            </View>
+          </View>
+
+          {/* Tehlikeli Bölge */}
+          <View style={[styles.panel, styles.dangerZone]}>
+            <Text style={[styles.sectionTitle, styles.dangerTitle]}>Tehlikeli Bölge</Text>
+            <TouchableOpacity
+              onPress={clearAllData}
+              style={[styles.outlineButton, styles.dangerButton]}
+            >
+              <Trash2 size={16} color="#d9534f" />
+              <Text style={[styles.dangerButtonText, { marginLeft: 8 }]}>Tüm Verileri Sil</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={[styles.outlineButton, styles.dangerButton]}
+            >
+              <LogOut size={16} color="#d9534f" />
+              <Text style={[styles.dangerButtonText, { marginLeft: 8 }]}>Çıkış Yap</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
       </View>
-
-      {/* Content */}
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-
-        {/* Profile Section */}
-        <View style={styles.panel}>
-          <View style={styles.sectionHeader}>
-            <User size={20} color="#336699" />
-            <Text style={styles.sectionTitle}>Profil Bilgileri</Text>
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>E-posta Adresi</Text>
-            <TextInput
-              style={[styles.input, styles.disabledInput]}
-              value={userProfile?.email || ""}
-              editable={false}
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Görünen Ad</Text>
-            <TextInput
-              style={[styles.input, styles.disabledInput]}
-              value={userProfile?.display_name || ""}
-              editable={false}
-            />
-          </View>
-        </View>
-
-        {/* Feedback Section */}
-        <View style={styles.panel}>
-          <View style={styles.sectionHeader}>
-            <FileText size={20} color="#336699" />
-            <Text style={styles.sectionTitle}>Geri Bildirim</Text>
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Görüş ve Önerileriniz</Text>
-            <TextInput
-              style={[styles.input, styles.textarea]}
-              placeholder="İrfan hakkındaki görüşlerinizi bizimle paylaşın..."
-              multiline
-              numberOfLines={5}
-              value={feedback}
-              onChangeText={setFeedback}
-            />
-          </View>
-          <TouchableOpacity
-            onPress={submitFeedback}
-            disabled={!feedback.trim()}
-            style={[styles.button, !feedback.trim() && styles.buttonDisabled]}
-          >
-            <Text style={styles.buttonText}>Geri Bildirim Gönder</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Legal Links */}
-        <View style={styles.panel}>
-          <View style={styles.sectionHeader}>
-            <Shield size={20} color="#336699" />
-            <Text style={styles.sectionTitle}>Hukuki</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => openUrl("https://example.com/privacy-policy")}
-            style={styles.outlineButton}
-          >
-            <Text style={styles.outlineButtonText}>Gizlilik Politikası</Text>
-            <ExternalLink size={16} color="#336699" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => openUrl("https://example.com/terms-of-service")}
-            style={styles.outlineButton}
-          >
-            <Text style={styles.outlineButtonText}>Kullanım Şartları</Text>
-            <ExternalLink size={16} color="#336699" />
-          </TouchableOpacity>
-        </View>
-
-        {/* App Info */}
-        <View style={styles.panel}>
-          <Text style={styles.sectionTitle}>Uygulama Bilgileri</Text>
-          <View style={styles.infoRow}>
-            <Text>Versiyon</Text>
-            <Text>1.0.0</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text>Yapı</Text>
-            <Text>2024.1</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text>Son Güncelleme</Text>
-            <Text>23 Ocak 2025</Text>
-          </View>
-        </View>
-
-        {/* Danger Zone */}
-        <View style={[styles.panel, styles.dangerZone]}>
-          <Text style={[styles.sectionTitle, styles.dangerTitle]}>Tehlikeli Bölge</Text>
-          <TouchableOpacity
-            onPress={clearAllData}
-            style={[styles.outlineButton, styles.dangerButton]}
-          >
-            <Trash2 size={16} color="#d9534f" />
-            <Text style={[styles.dangerButtonText, { marginLeft: 8 }]}>Tüm Verileri Sil</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={handleLogout}
-            style={[styles.outlineButton, styles.dangerButton]}
-          >
-            <LogOut size={16} color="#d9534f" />
-            <Text style={[styles.dangerButtonText, { marginLeft: 8 }]}>Çıkış Yap</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Bottom spacing */}
-        <View style={{ height: 40 }} />
-      </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-    backgroundColor: "rgba(255,255,255,0.85)",
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000",
   },
-  iconButton: { padding: 8 },
-  headerTitle: { flexDirection: "row", alignItems: "center", marginLeft: 12 },
-  logo: { width: 32, height: 32, borderRadius: 8, marginRight: 8 },
-  headerText: { fontSize: 20, fontWeight: "600", color: "#000" },
-
-  content: { padding: 16 },
+  container: { flex: 1, backgroundColor: "#000" },
+  content: { padding: 16, paddingTop: 56 },
 
   panel: {
-    backgroundColor: "rgba(255,255,255,0.8)",
+    backgroundColor: "#1e1e1e",
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -236,31 +219,32 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#336699",
-    marginLeft: 8,
+    color: "#F2AE30",
+    marginLeft: 6,
+   
   },
 
   inputGroup: { marginBottom: 16 },
 
   label: {
     fontSize: 14,
-    color: "#666",
+    color: "#888",
     marginBottom: 6,
   },
 
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#888",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
-    backgroundColor: "#fff",
-    color: "#000",
+    backgroundColor: "#000",
+    color: "#F2AE30",
   },
 
   disabledInput: {
-    backgroundColor: "#eee",
+    backgroundColor: "#000",
     color: "#888",
   },
 
@@ -270,14 +254,14 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#336699",
+    backgroundColor: "#888",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
   },
 
   buttonDisabled: {
-    backgroundColor: "#99aabb",
+    backgroundColor: "rgba(51,102,153,0.3)",
   },
 
   buttonText: {
@@ -291,7 +275,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "rgba(51,102,153,0.3)",
+    borderColor: "#888",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 14,
@@ -299,7 +283,7 @@ const styles = StyleSheet.create({
   },
 
   outlineButtonText: {
-    color: "#336699",
+    color: "#888",
     fontSize: 16,
     fontWeight: "600",
   },
@@ -307,7 +291,18 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 10,
+  },
+
+  infoLabel: {
+    color: "#888",
+    fontSize: 14,
+  },
+
+  infoValue: {
+    color: "#888",
+    fontSize: 14,
+    fontWeight: "500",
   },
 
   dangerZone: {

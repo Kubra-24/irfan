@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useNavigation, useRoute, NavigationProp } from "@react-navigation/native";
 
-// RootParamList tipini kendi projene göre güncellemen lazım
+
 type RootParamList = {
   Chat: undefined;
   Auth: undefined;
   Onboarding: undefined;
-  // diğer ekranlar burada tanımlı olabilir
+ 
 };
 
 const NotFound = () => {
@@ -46,7 +46,7 @@ export default NotFound;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f3f4f6", // gray-100
+    backgroundColor: "#f3f4f6", 
     alignItems: "center",
     justifyContent: "center",
   },
@@ -60,11 +60,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 20,
-    color: "#4b5563", // gray-600
+    color: "#4b5563", 
     marginBottom: 16,
   },
   link: {
-    color: "#3b82f6", // blue-500
+    color: "#3b82f6",
     textDecorationLine: "underline",
   },
 });

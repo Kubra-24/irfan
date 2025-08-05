@@ -1,19 +1,19 @@
-import React, { useEffect, useRef,  } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
   Image,
   Animated,
+  SafeAreaView,
+  useWindowDimensions,
 } from "react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../navigations/RootNavigator";
+import { Header } from "../components/Header";
 
 const irfanLogo = require("../assets/irfan-logo.png");
-
-interface WelcomePromptsProps {
-  readonly onSelectPrompt: (prompt: string) => void;
-}
 
 const prompts = [
   {
@@ -38,107 +38,131 @@ const prompts = [
   },
 ];
 
-export default function WelcomePrompts({ onSelectPrompt }: Readonly<WelcomePromptsProps>) {
-   const pulseAnim = useRef(new Animated.Value(0)).current;
-    useEffect(() => {
-       Animated.loop(
-         Animated.sequence([
-           Animated.timing(pulseAnim, {
-             toValue: 1,
-             duration: 4000,
-             useNativeDriver: true,
-           }),
-           Animated.timing(pulseAnim, {
-             toValue: 0,
-             duration: 4000,
-             useNativeDriver: true,
-           }),
-         ])
-       ).start();
-     }, []);
+export default function WelcomePrompts() {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const pulseAnim = useRef(new Animated.Value(0)).current;
+  const { width } = useWindowDimensions();
 
+  // Responsive kart genişliği
+  const cardWidth = (width - 64) / 2;
 
-   
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 4000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 0,
+          duration: 4000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [pulseAnim]);
+
+  // onPress'i useCallback ile sarmaladım - opsiyonel ama iyi pratik
+  const handlePress = useCallback(
+    (prompt: string) => {
+      navigation.navigate("Chat", { initialPrompt: prompt });
+    },
+    [navigation]
+  );
+
   return (
-    
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Header
+          showMenu={true}
+          onOpenMenu={() => navigation.navigate("Settings")}
+          showLogo={true}
+          title=""
+        />
 
+        <View style={styles.content}>
+          <View style={styles.logoContainer}>
+            <Animated.View
+              style={[
+                styles.glowEffect,
+                {
+                  opacity: pulseAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.3, 0.7],
+                  }),
+                  transform: [
+                    {
+                      scale: pulseAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1.1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
+            <Image source={irfanLogo} style={styles.logo} resizeMode="contain" />
+          </View>
 
-<View style={styles.logoContainer}>
-              <Animated.View
-                style={[
-                  styles.glowEffect,
-                  {
-                    opacity: pulseAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0.3, 0.7],
-                    }),
-                    transform: [
-                      {
-                        scale: pulseAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [1, 1.1],
-                        }),
-                      },
-                    ],
-                  },
-                ]}
-              />
-              <Image source={irfanLogo} style={styles.logo} resizeMode="contain" />
-            </View>
+          <View style={styles.headerText}>
+            <Text style={styles.arabicTitle}>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</Text>
+            <Text style={styles.title}>Yapay Zekâ Destekli İslami Rehberiniz</Text>
+            <Text style={styles.subtitle}>
+              "İslam’ın derinliklerindeki bilgileri kolayca keşfedin."
+            </Text>
+          </View>
 
-
-
-      <View style={styles.header}>
-
-        
-        <Text style={styles.arabicTitle}>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</Text>
-        <Text style={styles.title}>Yapay Zekâ Destekli İslami Rehberiniz</Text>
-        <Text style={styles.subtitle}>"İslam’ın derinliklerindeki bilgileri kolayca keşfedin."</Text>
+          <View style={styles.grid}>
+            {prompts.map((p) => (
+              <TouchableOpacity
+                key={p.title}
+                style={[styles.card, { width: cardWidth }]}
+                activeOpacity={0.8}
+                onPress={() => handlePress(p.prompt)}
+              >
+                <Text style={styles.cardTitle}>{p.title}</Text>
+                <Text style={styles.cardSubtitle}>{p.subtitle}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       </View>
-
-      <View style={styles.grid}>
-        {prompts.map((p) => (
-          <TouchableOpacity
-            key={p.title}
-            style={styles.card}
-            activeOpacity={0.8}
-            onPress={() => onSelectPrompt(p.prompt)}
-          >
-            <Text style={styles.cardTitle}>{p.title}</Text>
-            <Text style={styles.cardSubtitle}>{p.subtitle}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
-const { width } = Dimensions.get("window");
-const cardWidth = (width - 64) / 2; 
-
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
   container: {
     flex: 1,
     backgroundColor: "#000",
-    padding: 24,
+  },
+  content: {
+    flex: 1,
+    paddingTop: 56,
+    paddingHorizontal: 24,
     justifyContent: "center",
   },
-  header: {
+  headerText: {
     marginBottom: 32,
     alignItems: "center",
   },
   title: {
     fontSize: 18,
-     textAlign: "center",
+    textAlign: "center",
     fontStyle: "italic",
-  fontWeight: "bold",
+    fontWeight: "bold",
     color: "#F2AE30",
     marginBottom: 8,
     textShadowColor: "#F2AE3080",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 6,
-
   },
   arabicTitle: {
     fontSize: 25,
@@ -165,7 +189,6 @@ const styles = StyleSheet.create({
     borderColor: "#333",
     borderRadius: 12,
     padding: 16,
-    width: cardWidth,
     height: 120,
     marginBottom: 16,
     justifyContent: "center",
@@ -180,20 +203,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#ccc",
   },
-logoContainer: {
+  logoContainer: {
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
   },
-logo: {
+  logo: {
     width: 100,
     height: 100,
     borderRadius: 18,
-},
-
-
-glowEffect: {
+  },
+  glowEffect: {
     position: "absolute",
     width: 110,
     height: 110,
@@ -205,6 +226,4 @@ glowEffect: {
     shadowRadius: 25,
     elevation: 20,
   },
-
-
 });

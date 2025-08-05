@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
     maxWidth: "80%",
   },
   bubbleUser: {
-    backgroundColor: "#336699",
+    backgroundColor: "#F2AE30",
     alignSelf: "flex-end",
     borderTopRightRadius: 0,
   },
   bubbleAI: {
-    backgroundColor: "#e5e5ea",
+    backgroundColor: "#999",
     alignSelf: "flex-start",
     borderTopLeftRadius: 0,
   },

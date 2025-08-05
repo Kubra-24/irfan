@@ -1,18 +1,25 @@
-// src/pages/Chat.tsx
-import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
-import { Header } from "../components/Header";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { ChatBubble } from "../components/ChatBubble";
 import { ChatInput } from "../components/ChatInput";
 import WelcomePrompts from "../components/WelcomePrompts";
-import { ChatHistory } from "../components/ChatHistory";
-import { Settings } from "../components/Settings";
 import { useToast } from "../hooks/usetoast";
 import { useAuth } from "../hooks/useAuth";
 import { useDatabase } from "../hooks/useDatabase";
 import { islamicApiService } from "../services/islamicApi";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { Header } from "../components/Header";
 import { RootStackParamList } from "../navigations/RootNavigator";
+import { RouteProp, NavigationProp } from "@react-navigation/native";
 
 interface Message {
   id: string;
@@ -21,111 +28,152 @@ interface Message {
   timestamp: string;
 }
 
-type ChatView = "chat" | "history" | "settings";
 type ChatRouteProp = RouteProp<RootStackParamList, "Chat">;
+type ChatNavigationProp = NavigationProp<RootStackParamList, "Chat">;
 
 export function Chat() {
   const route = useRoute<ChatRouteProp>();
+  const navigation = useNavigation<ChatNavigationProp>();
+  const scrollRef = useRef<ScrollView>(null);
+
   const initialPrompt = route.params?.initialPrompt;
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentView, setCurrentView] = useState<ChatView>("chat");
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<any>(null);
 
   const { toast } = useToast();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const database = useDatabase(user?.id);
 
+  // Mesajlar değiştiğinde scroll otomatik sona kaydırma
+  useEffect(() => {
+    scrollRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
+
+  // Başlangıçta initialPrompt varsa gönder
   useEffect(() => {
     if (user && initialPrompt && messages.length === 0) {
       handleSendMessage(initialPrompt);
     }
   }, [initialPrompt, user]);
 
-  const handleSendMessage = async (text: string) => {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text,
-      type: "user",
-      timestamp: new Date().toLocaleTimeString("tr-TR", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
+  // Zaman damgası helper
+  const getCurrentTimeStamp = () =>
+    new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
+  // Mesaj gönderme fonksiyonu
+  const handleSendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim()) return;
 
-    try {
-      let sessionId = currentSessionId;
-      if (!sessionId && user) {
-        sessionId = await database.createChatSession(text, text);
-        setCurrentSessionId(sessionId);
-      }
-
-      const response = await islamicApiService.getDemoResponse(text);
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response.answer,
-        type: "ai",
-        timestamp: new Date().toLocaleTimeString("tr-TR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        text,
+        type: "user",
+        timestamp: getCurrentTimeStamp(),
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
+      setMessages((prev) => [...prev, userMessage]);
+      setIsLoading(true);
 
-      if (sessionId && user) {
-        await database.saveMessage(sessionId, text, "user");
-        await database.saveMessage(sessionId, response.answer, "ai");
+      try {
+        let sessionId = currentSessionId;
+        if (!sessionId && user) {
+          sessionId = await database.createChatSession(text, text);
+          setCurrentSessionId(sessionId);
+        }
+
+        const response = await islamicApiService.getDemoResponse(text);
+
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.answer,
+          type: "ai",
+          timestamp: getCurrentTimeStamp(),
+        };
+
+        setMessages((prev) => [...prev, aiMessage]);
+
+        if (sessionId && user) {
+          await database.saveMessage(sessionId, text, "user");
+          await database.saveMessage(sessionId, response.answer, "ai");
+        }
+      } catch (error) {
+        toast({ title: "Hata", description: "Mesaj gönderilemedi." });
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      toast({ title: "Hata", description: "Mesaj gönderilemedi." });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [currentSessionId, user, database, toast]
+  );
 
   return (
-    <View style={styles.container}>
-      <Header
-        onOpenHistory={() => setCurrentView("history")}
-        onOpenMenu={() => setCurrentView("settings")}
-      />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={0}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.inner}>
+          <Header
+            onBack={() => navigation.goBack()}
+            onOpenHistory={() => navigation.navigate("ChatHistory")}
+            showHistory={true}
+            showLogo={true}
+            title=""
+          />
 
-      <ScrollView contentContainerStyle={styles.messagesContainer}>
-        {messages.length === 0 ? (
-          <WelcomePrompts onSelectPrompt={handleSendMessage} />
-        ) : (
-          <>
-            {messages.map((message) => (
-              <ChatBubble
-                key={message.id}
-                message={message.text}
-                type={message.type}
-                timestamp={message.timestamp}
-              />
-            ))}
-            {isLoading && (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="small" color="#336699" />
-              </View>
+          <ScrollView
+            ref={scrollRef}
+            contentContainerStyle={styles.messagesContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+            {messages.length === 0 ? (
+              <WelcomePrompts />
+            ) : (
+              <>
+                {messages.map((message) => (
+                  <ChatBubble
+                    key={message.id}
+                    message={message.text}
+                    type={message.type}
+                    timestamp={message.timestamp}
+                  />
+                ))}
+                {isLoading && (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="small" color="#2e2e2e" />
+                  </View>
+                )}
+              </>
             )}
-          </>
-        )}
-      </ScrollView>
+          </ScrollView>
 
-      <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
-    </View>
+          <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", paddingTop: 50 },
-  messagesContainer: { padding: 16, paddingBottom: 100 },
-  loadingContainer: { marginTop: 10, marginBottom: 20, alignItems: "flex-start" },
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  inner: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  messagesContainer: {
+    padding: 16,
+    paddingBottom: 8,
+    flexGrow: 1,
+  },
+  loadingContainer: {
+    marginTop: 10,
+    marginBottom: 20,
+    alignItems: "flex-start",
+  },
 });

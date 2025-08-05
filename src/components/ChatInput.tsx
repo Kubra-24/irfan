@@ -7,6 +7,7 @@ import {
   Keyboard,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Header } from "../components/Header";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -30,6 +31,8 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
         style={styles.textInput}
         multiline
         placeholder="İslami bir konu hakkında soru sorun..."
+        
+        placeholderTextColor="#666"
         value={message}
         onChangeText={setMessage}
         editable={!disabled}
@@ -47,7 +50,7 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
           (disabled || !message.trim()) && styles.sendButtonDisabled,
         ]}
       >
-        <Ionicons name="send" size={24} color="white" />
+        <Ionicons name="send" size={24} color="#2e2e2e" />
       </TouchableOpacity>
     </View>
   );
@@ -58,9 +61,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 12,
     borderTopWidth: 1,
-    borderTopColor: "#ccc",
-    backgroundColor: "rgba(255,255,255,0.9)", 
+    borderTopColor: "#000",
+    backgroundColor: "#000", 
     alignItems: "flex-end",
+    
   },
   textInput: {
     flex: 1,
@@ -68,16 +72,16 @@ const styles = StyleSheet.create({
     maxHeight: 128,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: "white",
+    backgroundColor: "#000",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#666",
     fontSize: 16,
     color: "#333",
   },
   sendButton: {
     marginLeft: 8,
-    backgroundColor: "#336699",
+    backgroundColor: "#156dc6ff",
     borderRadius: 12,
     padding: 12,
     justifyContent: "center",

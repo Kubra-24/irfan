@@ -7,10 +7,15 @@ import {
   ActivityIndicator,
   StyleSheet,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useToast } from "../hooks/usetoast";
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigations/RootNavigator";
+
+import { Header } from "../components/Header";
 
 interface ChatSession {
   id: string;
@@ -20,14 +25,12 @@ interface ChatSession {
   messageCount: number;
 }
 
-interface ChatHistoryProps {
-  onBack: () => void;
+type Props = NativeStackScreenProps<RootStackParamList, "ChatHistory"> & {
+  onBack?: () => void;
   onSelectChat?: (chatId: string) => void;
-}
+};
 
-const STORAGE_KEY = "irfan_chat_history";
-
-export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
+export const ChatHistory = ({ navigation, onBack, onSelectChat }: Props) => {
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -42,11 +45,10 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
   const loadChatHistory = async () => {
     setIsLoading(true);
     try {
-      const savedHistory = await AsyncStorage.getItem(STORAGE_KEY);
+      const savedHistory = await AsyncStorage.getItem("irfan_chat_history");
       if (savedHistory) {
         setChatSessions(JSON.parse(savedHistory));
       } else {
-        // Demo data
         setChatSessions([
           {
             id: "1",
@@ -80,7 +82,7 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
 
   const saveChatHistory = async (sessions: ChatSession[]) => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+      await AsyncStorage.setItem("irfan_chat_history", JSON.stringify(sessions));
     } catch (error) {
       console.error("Sohbet geçmişi kaydedilemedi:", error);
       Alert.alert("Hata", "Sohbet geçmişi kaydedilemedi.");
@@ -110,7 +112,7 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
           onPress: async () => {
             setChatSessions([]);
             try {
-              await AsyncStorage.removeItem(STORAGE_KEY);
+              await AsyncStorage.removeItem("irfan_chat_history");
             } catch (error) {
               console.error("Sohbet geçmişi temizlenemedi:", error);
               Alert.alert("Hata", "Sohbet geçmişi temizlenemedi.");
@@ -123,6 +125,11 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
         },
       ]
     );
+  };
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else navigation.goBack();
   };
 
   const renderItem = ({ item }: { item: ChatSession }) => (
@@ -157,80 +164,59 @@ export const ChatHistory = ({ onBack, onSelectChat }: ChatHistoryProps) => {
   );
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#336699" />
-        </TouchableOpacity>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Header
+          title="Sohbet Geçmişi"
+          onBack={handleBack}
+          showLogo={false}
+          showMenu={false}
+          showHistory={false}
+          rightComponent={
+            chatSessions.length > 0 && (
+              <TouchableOpacity onPress={clearAllHistory} style={styles.clearAllButton}>
+                <Ionicons name="trash-outline" size={20} color="#b22222" />
+              </TouchableOpacity>
+            )
+          }
+        />
 
-        <View style={styles.headerTitleWrapper}>
-          <Ionicons
-            name="chatbubble-ellipses"
-            size={20}
-            color="#336699"
-            style={styles.headerTitleIcon}
-          />
-          <Text style={styles.headerTitle}>Sohbet Geçmişi</Text>
-        </View>
-
-        {chatSessions.length > 0 && (
-          <TouchableOpacity onPress={clearAllHistory} style={styles.clearAllButton}>
-            <Ionicons name="trash-outline" size={16} color="#b22222" />
-            <Text style={styles.clearAllText}>Tümünü Sil</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {/* Content */}
-      <View style={styles.content}>
-        {isLoading ? (
-          <View style={styles.loadingWrapper}>
-            <ActivityIndicator size="large" color="#336699" />
-            <Text style={styles.loadingText}>Sohbet geçmişi yükleniyor...</Text>
-          </View>
-        ) : chatSessions.length === 0 ? (
-          <View style={styles.emptyWrapper}>
-            <View style={styles.emptyIconWrapper}>
-              <Ionicons name="chatbubble-ellipses-outline" size={40} color="#aaa" />
+        <View style={styles.content}>
+          {isLoading ? (
+            <View style={styles.loadingWrapper}>
+              <ActivityIndicator size="large" color="#336699" />
+              <Text style={styles.loadingText}>Sohbet geçmişi yükleniyor...</Text>
             </View>
-            <Text style={styles.emptyTitle}>Henüz Sohbet Yok</Text>
-            <Text style={styles.emptyText}>İlk sorunuzu sorarak sohbete başlayın</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={chatSessions}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listContent}
-          />
-        )}
+          ) : chatSessions.length === 0 ? (
+            <View style={styles.emptyWrapper}>
+              <View style={styles.emptyIconWrapper}>
+                <Ionicons name="chatbubble-ellipses-outline" size={40} color="#aaa" />
+              </View>
+              <Text style={styles.emptyTitle}>Henüz Sohbet Yok</Text>
+              <Text style={styles.emptyText}>İlk sorunuzu sorarak sohbete başlayın</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={chatSessions}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.listContent}
+              style={{ flex: 1 }}
+            />
+          )}
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  header: {
-    flexDirection: "row",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  backButton: { padding: 6 },
-  headerTitleWrapper: { flexDirection: "row", alignItems: "center" },
-  headerTitleIcon: { marginRight: 6 },
-  headerTitle: { fontSize: 18, fontWeight: "600", color: "#336699" },
+  safeArea: { flex: 1, backgroundColor: "#000" },
+  container: { flex: 1, backgroundColor: "#000" },
   clearAllButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 6,
+    padding: 8,
+    marginRight: 8,
   },
-  clearAllText: { color: "#b22222", fontWeight: "600", marginLeft: 4 },
   content: { flex: 1 },
   loadingWrapper: { flex: 1, justifyContent: "center", alignItems: "center" },
   loadingText: { marginTop: 10, color: "#666" },
@@ -244,11 +230,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  emptyTitle: { fontSize: 20, fontWeight: "600", marginBottom: 8 },
+  emptyTitle: { fontSize: 20, fontWeight: "600", marginBottom: 8, color: "#ccc" },
   emptyText: { fontSize: 14, color: "#888", textAlign: "center" },
-  listContent: { padding: 12 },
+  listContent: { padding: 12, paddingBottom: 24 },
   chatItem: {
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#1e1e1e",
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
@@ -256,10 +242,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   chatInfo: { flex: 1, marginRight: 8 },
-  chatTitle: { fontWeight: "700", fontSize: 16, color: "#222" },
+  chatTitle: { fontWeight: "700", fontSize: 16, color: "#fff" },
   chatPreview: {
     fontSize: 14,
-    color: "#555",
+    color: "#ccc",
     marginTop: 4,
   },
   chatMeta: {

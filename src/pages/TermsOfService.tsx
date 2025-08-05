@@ -1,9 +1,18 @@
 import React from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { ArrowLeft } from "lucide-react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../navigations/RootNavigator";
 
 export default function TermsOfService() {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <ArrowLeft size={24} color="#888" />
+      </TouchableOpacity>
+
       <View style={styles.content}>
         <Text style={styles.title}>Kullanım Şartları</Text>
 
@@ -40,22 +49,30 @@ const Section = ({ title, content }: { title: string; content: string }) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc", // bg-background
+    backgroundColor: "#000",
     padding: 24,
+  },
+  backButton: {
+    position: "absolute",
+    top: 24,
+    left: 24,
+    zIndex: 10,
+    padding: 4,
   },
   content: {
     maxWidth: 700,
     alignSelf: "center",
+    paddingTop: 48,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 32,
     textAlign: "center",
-    color: "#1e293b", // text-foreground
+    color: "#F2AE30",
   },
   panel: {
-    backgroundColor: "#ffffffcc", // glass-panel benzeri
+    backgroundColor: "#1e1e1e",
     borderRadius: 16,
     padding: 24,
     shadowColor: "#000",
@@ -71,11 +88,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 12,
-    color: "#3b82f6", // text-primary
+    color: "#CCCCCC",
   },
   sectionContent: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#64748b", // text-muted-foreground
+    color: "#888",
   },
 });

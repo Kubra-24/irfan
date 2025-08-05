@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   View,
   Image,
@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+
 import { useAuth } from "../hooks/useAuth";
 
 const irfanLogo = require("../assets/irfan-logo.png");
@@ -29,7 +30,7 @@ export const AuthScreen = ({ navigation }: any) => {
   const { signIn, signUp, loading } = useAuth();
 
   useEffect(() => {
-    Animated.loop(
+    const animation = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
           toValue: 1,
@@ -42,10 +43,13 @@ export const AuthScreen = ({ navigation }: any) => {
           useNativeDriver: true,
         }),
       ])
-    ).start();
+    );
+    animation.start();
+
+    return () => animation.stop();
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!email.trim() || !password.trim()) return;
 
     if (isSignUp && password.length < 6) {
@@ -83,17 +87,13 @@ export const AuthScreen = ({ navigation }: any) => {
     } catch (err: any) {
       Alert.alert("Hata", err.message || "Bir hata oluştu", [{ text: "Tamam" }]);
     }
-  };
+  }, [email, password, isSignUp, signIn, signUp, navigation]);
+
+  const handleForgotPassword = useCallback(() => {
+    navigation.navigate("ForgotPassword");
+  }, [navigation]);
 
   const isDisabled = loading || !email.trim() || !password.trim();
-
-  const handleGooglePress = () => {
-    Alert.alert("Google simgesi tıklandı!");
-  };
-
-  const handleForgotPassword = () => {
-    navigation.navigate("ForgotPassword");
-  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -221,7 +221,7 @@ export const AuthScreen = ({ navigation }: any) => {
 
             <TouchableOpacity
               style={styles.googleButton}
-              onPress={handleGooglePress}
+              onPress={() => {}}
               activeOpacity={0.7}
             >
               <Image source={googleIcon} style={{ width: 28, height: 28, marginRight: 8 }} />
@@ -244,6 +244,14 @@ export const AuthScreen = ({ navigation }: any) => {
                 : "Hesabınız yok mu? Kayıt olun"}
             </Button>
           </View>
+
+
+
+
+
+
+
+          
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -251,22 +259,10 @@ export const AuthScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
-  flex: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: "center",
-    backgroundColor: "#000",
-  },
-  headerContainer: {
-    marginTop: 40,
-  },
+  safeArea: { flex: 1, backgroundColor: "#000" },
+  flex: { flex: 1 },
+  container: { flex: 1, padding: 24, justifyContent: "center", backgroundColor: "#000" },
+  headerContainer: { marginTop: 40 },
   logoContainer: {
     alignSelf: "center",
     justifyContent: "center",
@@ -285,11 +281,7 @@ const styles = StyleSheet.create({
     shadowRadius: 25,
     elevation: 20,
   },
-  logo: {
-    width: 100,
-    height: 100,
-    borderRadius: 18,
-  },
+  logo: { width: 100, height: 100, borderRadius: 18 },
   arabicTitle: {
     fontSize: 24,
     fontWeight: "bold",
@@ -298,18 +290,9 @@ const styles = StyleSheet.create({
     fontFamily: "Arial",
     marginBottom: 20,
   },
-  subtitle: {
-    fontSize: 14,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  inputsWrapper: {
-    marginTop: 20,
-  },
-  authInputGroup: {
-    marginBottom: 16,
-  },
+  subtitle: { fontSize: 14, color: "#666", textAlign: "center", marginBottom: 24 },
+  inputsWrapper: { marginTop: 20 },
+  authInputGroup: { marginBottom: 16 },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -320,22 +303,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: "#000",
   },
-  inputIcon: {
-    marginRight: 8,
-  },
-  input: {
-    color: "#fff",
-    flex: 1,
-    height: 44,
-  },
-  showHideButton: {
-    paddingHorizontal: 8,
-  },
-  forgotWrapper: {
-    alignSelf: "flex-end",
-    marginBottom: 15,
-    marginRight: 2,
-  },
+  inputIcon: { marginRight: 8 },
+  input: { color: "#fff", flex: 1, height: 44 },
+  showHideButton: { paddingHorizontal: 8 },
+  forgotWrapper: { alignSelf: "flex-end", marginBottom: 15, marginRight: 2 },
   forgotButton: {},
   forgotText: {
     color: "#666",
@@ -354,9 +325,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     width: "80%",
   },
-  buttonDisabled: {
-    opacity: 0.5,
-  },
+  buttonDisabled: { opacity: 0.5 },
   buttonText: {
     color: "#fff",
     fontWeight: "600",
@@ -369,11 +338,7 @@ const styles = StyleSheet.create({
     width: "80%",
     marginVertical: 16,
   },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#2e2e2e",
-  },
+  line: { flex: 1, height: 1, backgroundColor: "#2e2e2e" },
   orText: {
     marginHorizontal: 8,
     color: "#666",
@@ -394,23 +359,13 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
-  googleButtonText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#000",
-  },
+  googleButtonText: { fontSize: 12, fontWeight: "600", color: "#000" },
   bottomContainer: {
     paddingHorizontal: 24,
     paddingVertical: 4,
     backgroundColor: "#000",
     alignItems: "center",
   },
-  toggleButton: {
-    alignSelf: "center",
-    marginTop: 12,
-  },
-  toggleText: {
-    color: "#bec9d3ff",
-    fontSize: 14,
-  },
+  toggleButton: { alignSelf: "center", marginTop: 12 },
+  toggleText: { color: "#bec9d3ff", fontSize: 14 },
 });

@@ -1,7 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// API Service for İrfan Islamic Knowledge Assistant
-// Swagger Endpoint Integration
 
 interface ApiResponse<T> {
   success: boolean;
