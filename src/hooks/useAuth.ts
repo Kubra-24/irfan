@@ -1,0 +1,71 @@
+import { useState, useEffect } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "../integrations/supabase/client";
+import { useToast } from "./usetoast";
+
+export const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const signUp = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      toast({ title: "Kayıt Başarılı", description: "Hesabınız oluşturuldu." });
+      return { error: null };
+    } catch (error: any) {
+      toast({ title: "Kayıt Hatası", description: error.message });
+      return { error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast({ title: "Giriş Başarılı", description: "Hoş geldiniz!" });
+      return { error: null };
+    } catch (error: any) {
+      toast({ title: "Giriş Hatası", description: error.message });
+      return { error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast({ title: "Çıkış Yapıldı", description: "Güvenle çıkış yaptınız." });
+    } catch (error: any) {
+      toast({ title: "Çıkış Hatası", description: error.message });
+    }
+  };
+
+  return { user, session, loading, signUp, signIn, signOut };
+};

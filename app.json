@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "İrfan",
+    "slug": "irfan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "icon": "./src/assets/irfan-logo.png",
+    "splash": {
+      "image": "./src/assets/bismillah-calligraphy.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "scheme": "irfan",
+    "android": {
+      "package": "com.irfan",
+      "versionCode": 1,
+      "edgeToEdgeEnabled": true,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "irfan",
+              "host": "*",
+              "pathPrefix": "/reset-password"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.irfan",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["irfan"]
+          }
+        ]
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4d1c3156-ac74-4ec8-b7e6-4b6a9740c372"
+      }
+    }
+  }
+}
