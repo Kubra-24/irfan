@@ -8,7 +8,7 @@
     "newArchEnabled": true,
     "icon": "./src/assets/irfan-logo.png",
     "splash": {
-      "image": "./src/assets/bismillah-calligraphy.png",
+      "image": "./src/assets/bismillah-calligraphy1.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -16,6 +16,10 @@
     "android": {
       "package": "com.irfan",
       "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-foreground.png",
+        "backgroundColor": "#000000"
+      },
       "edgeToEdgeEnabled": true,
       "intentFilters": [
         {
@@ -42,7 +46,10 @@
           {
             "CFBundleURLSchemes": ["irfan"]
           }
-        ]
+        ],
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       }
     },
     "extra": {

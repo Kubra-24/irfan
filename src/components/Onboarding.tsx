@@ -19,7 +19,7 @@ const slides = [
     id: 1,
     title: "İrfan'a Hoş Geldiniz",
     titleArabic: "أهلاً وسهلاً بكم في إرفان",
-    subtitle: '"Maneviyat yolculuğunuzda size özel bir rehber"',
+    subtitle: '"Maneviyat yolculuğunuzda size özel rehber"',
     description: "İslami bilgilere modern ve akıcı bir şekilde ulaşın.",
     image: require("../assets/irfan-logo.png"),
   },
@@ -29,15 +29,16 @@ const slides = [
     titleArabic: "اكتشف وتعلم",
     subtitle: '"Ayetleri keşfedin, hadislerle derinleşin."',
     description: "Tefsirlerin sırlarını keşfedin, İslami ilimleri öğrenin.",
-    image: require("../assets/islamic-pattern.png"),
+    image: require("../assets/kesfet.png"),
   },
   {
     id: 3,
     title: "Gizli İlimler Hazinesi",
     titleArabic: "كنز العلوم الخفية",
-    subtitle: '"Hayatınızdaki anlara özel dua koleksiyonu."',
-    description: "Manevi rehberlik ve özel anlar için dua kaynağı.",
-    image: require("../assets/mosque-silhouette.png"),
+    subtitle: '"Manevi rehberlik ve özel anlar için dua koleksiyonu."',
+    description:
+      "Gizli İlimler Hazinesi kitabı, kadim bilgiler ve manevi öğretileri sizlere sunuyor.",
+    image: require("../assets/gizli.png"),
   },
   {
     id: 4,
@@ -45,7 +46,7 @@ const slides = [
     titleArabic: "ابدأ الآن",
     subtitle: '"İslami bilgiye dair sorularınızı sorun."',
     description: "Yapay zeka destekli rehberinizle sohbete başlayın.",
-    image: require("../assets/irfan-logo.png"),
+    image: require("../assets/mosque-silhouette.png"),
   },
 ];
 
@@ -119,70 +120,71 @@ export const Onboarding = ({ onComplete }: OnboardingProps) => {
             <Text style={styles.skipText}>Geç</Text>
           </TouchableOpacity>
 
-          <View style={styles.imageWrapper}>
-            <Animated.View style={[styles.imageGlow, { opacity: glowOpacity }]} />
-            <Image source={slide.image} style={styles.image} resizeMode="contain" />
-          </View>
+          <View style={[styles.contentWrapper, { minHeight: height * 0.7 }]}>
+            <View style={styles.imageWrapper}>
+              <Animated.View style={[styles.imageGlow, { opacity: glowOpacity }]} />
+              <Image source={slide.image} style={styles.image} resizeMode="contain" />
+            </View>
 
-          <View style={styles.arabicTitleWrapper}>
-            <Text
-              style={[
-                styles.titleArabic,
-                Platform.OS === "android" && { fontFamily: "sans-serif" },
-              ]}
-            >
-              {slide.titleArabic}
-            </Text>
-          </View>
+            <View style={styles.arabicTitleWrapper}>
+              <Text
+                style={[
+                  styles.titleArabic,
+                  Platform.OS === "android" && { fontFamily: "sans-serif" },
+                ]}
+              >
+                {slide.titleArabic}
+              </Text>
+            </View>
 
-          <View style={styles.pagination}>
-            {slides.map((_, i) => (
-              <View
-                key={i}
-                style={[styles.dot, i === currentSlide ? styles.activeDot : styles.inactiveDot]}
-              />
-            ))}
-          </View>
+            <View style={styles.pagination}>
+              {slides.map((_, i) => (
+                <View
+                  key={i}
+                  style={[styles.dot, i === currentSlide ? styles.activeDot : styles.inactiveDot]}
+                />
+              ))}
+            </View>
 
-          <View style={styles.navButtons}>
-            {currentSlide === 0 ? (
-              <View style={{ flex: 1, alignItems: "flex-end" }}>
-                <GlowButton onPress={nextSlide} glowOpacity={glowOpacity}>
-                  <ArrowRight size={20} color="#F2AE30" />
-                </GlowButton>
-              </View>
-            ) : (
-              <>
-                <GlowButton onPress={prevSlide} style={{ marginRight: 30 }} glowOpacity={glowOpacity}>
-                  <ArrowLeft size={20} color="#F2AE30" />
-                </GlowButton>
-                <GlowButton onPress={nextSlide} glowOpacity={glowOpacity}>
-                  <ArrowRight size={20} color="#F2AE30" />
-                </GlowButton>
-              </>
-            )}
-          </View>
+            <View style={styles.navButtons}>
+              {currentSlide === 0 ? (
+                <View style={{ flex: 1, alignItems: "flex-end" }}>
+                  <GlowButton onPress={nextSlide} glowOpacity={glowOpacity}>
+                    <ArrowRight size={20} color="#F2AE30" />
+                  </GlowButton>
+                </View>
+              ) : (
+                <>
+                  <GlowButton
+                    onPress={prevSlide}
+                    style={{ marginRight: 30 }}
+                    glowOpacity={glowOpacity}
+                  >
+                    <ArrowLeft size={20} color="#F2AE30" />
+                  </GlowButton>
+                  <GlowButton onPress={nextSlide} glowOpacity={glowOpacity}>
+                    <ArrowRight size={20} color="#F2AE30" />
+                  </GlowButton>
+                </>
+              )}
+            </View>
 
-          <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{slide.title}</Text>
-          </View>
+            <View style={styles.titleWrapper}>
+              <Text style={styles.title}>{slide.title}</Text>
+            </View>
 
-          <Text style={styles.subtitle}>{slide.subtitle}</Text>
-          <Text
-            style={[
-              styles.description,
-              currentSlide === 0 ? { marginBottom: 10 } : { marginBottom: 30 },
-            ]}
-          >
-            {slide.description}
-          </Text>
+            <View style={styles.textBox}>
+              <Text style={styles.subtitle}>{slide.subtitle}</Text>
+              <Text style={styles.description}>{slide.description}</Text>
+            </View>
+          </View>
         </View>
       </SafeAreaView>
     </>
   );
 };
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -192,11 +194,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingBottom: 40,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#000",
+  },
+  contentWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 24,
+    paddingBottom: 40,
   },
   skipButton: {
     position: "absolute",
@@ -307,8 +315,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#F2AE30",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 15,
     fontStyle: "italic",
+  },
+  textBox: {
+    height: 100, 
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
   subtitle: {
     fontSize: 13.6,
@@ -325,4 +339,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontStyle: "italic",
   },
-});
+}); 

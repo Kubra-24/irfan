@@ -30,17 +30,17 @@ export const ChatInput = ({ onSendMessage, disabled = false }: ChatInputProps) =
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.textInput}
-        multiline
-        placeholder="İslami bir konu hakkında soru sorun..."
-        placeholderTextColor="#666"
-        value={message}
-        onChangeText={setMessage}
-        editable={!disabled}
-        returnKeyType="send"
-        onSubmitEditing={handleSubmit}
-        blurOnSubmit={false}
-      />
+  style={styles.textInput}
+  multiline={false} // <-- burayı false yaptık
+  placeholder="İslami bir konu hakkında soru sorun..."
+  placeholderTextColor="#666"
+  value={message}
+  onChangeText={setMessage}
+  editable={!disabled}
+  returnKeyType="send"
+  onSubmitEditing={handleSubmit}
+  blurOnSubmit={false}
+/>
       <TouchableOpacity
         onPress={handleSubmit}
         disabled={isSendDisabled}
@@ -73,9 +73,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#666",
+    borderColor: "#999",
     fontSize: 16,
-    color: "#333",
+    color: "#ccc",
   },
   sendButton: {
     marginLeft: 8,

@@ -25,7 +25,7 @@ export const ChatBubble = ({ message, type, timestamp }: ChatBubbleProps) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginBottom: 16,
+    marginBottom: 12,
     flexDirection: "row",
   },
   justifyEnd: {
@@ -36,13 +36,14 @@ const styles = StyleSheet.create({
   },
   bubbleWrapper: {
     flexDirection: "column",
-
+    maxWidth: "80%",
   },
   bubble: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderRadius: 16,
-    maxWidth: "80%",
+    minWidth: 40,
+    flexShrink: 1,
   },
   bubbleUser: {
     backgroundColor: "#F2AE30",
@@ -58,11 +59,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: "#000",
+    flexShrink: 1,
   },
   timestamp: {
-    fontSize: 12,
+    fontSize: 10,
     color: "#999",
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
     marginTop: 2,
+    alignSelf: "flex-end",
   },
 });

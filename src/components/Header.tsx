@@ -1,10 +1,9 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Menu, History, ArrowLeft } from "lucide-react-native";
 
 interface HeaderProps {
   title?: string;
-  showLogo?: boolean;
   onOpenMenu?: () => void;
   onOpenHistory?: () => void;
   onBack?: () => void;
@@ -13,11 +12,8 @@ interface HeaderProps {
   rightComponent?: React.ReactNode;
 }
 
-const irfanLogo = require("../assets/irfan-logo.png");
-
 export const Header = ({
   title = "İrfan",
-  showLogo = true,
   onOpenMenu,
   onOpenHistory,
   onBack,
@@ -34,7 +30,6 @@ export const Header = ({
             <ArrowLeft color="#CCC" size={22} />
           </TouchableOpacity>
         )}
-        {showLogo && <Image source={irfanLogo} style={styles.logo} />}
         <Text style={styles.title}>{title}</Text>
       </View>
 
@@ -61,7 +56,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: "#1e1e1e",
-  
     borderBottomWidth: 1,
     flexDirection: "row",
     alignItems: "center",
@@ -72,17 +66,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    marginLeft: 4,
-    marginRight: 6,
-  },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#CCC",
+    marginLeft: 6,
   },
   right: {
     flexDirection: "row",

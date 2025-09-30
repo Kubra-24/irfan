@@ -6,7 +6,6 @@ import { Onboarding } from "../components/Onboarding";
 import { AuthScreen } from "../components/AuthScreen";
 import { ForgotPassword } from "../components/ForgotPassword";
 import { ResetPassword } from "../components/ResetPassword";
-import WelcomePrompts from "../components/WelcomePrompts";
 import { Chat } from "../pages/Chat";
 import { ChatHistory } from "../components/ChatHistory";
 import { Settings } from "../components/Settings";
@@ -19,7 +18,6 @@ export type RootStackParamList = {
   Auth: undefined;
   ForgotPassword: undefined;
   ResetPassword: undefined;
-  WelcomePrompts: undefined;
   Chat: { initialPrompt?: string } | undefined;
   ChatHistory: undefined;
   Settings: undefined;
@@ -47,7 +45,6 @@ export const RootNavigator = () => {
       <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
-      <Stack.Screen name="WelcomePrompts" component={WelcomePrompts} />
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen
         name="ChatHistory"
@@ -68,10 +65,7 @@ export const RootNavigator = () => {
             {...props}
             onBack={() => props.navigation.goBack()}
             onLogout={() => props.navigation.navigate("Auth")}
-            userProfile={{
-              email: "user@example.com",
-              display_name: "İrfan Kullanıcı",
-            }}
+           
           />
         )}
       />

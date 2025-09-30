@@ -185,7 +185,7 @@ export const ChatHistory = ({ navigation, onBack, onSelectChat }: Props) => {
         <Header
           title="Sohbet Geçmişi"
           onBack={handleBack}
-          showLogo={false}
+         
           showMenu={false}
           showHistory={false}
           rightComponent={

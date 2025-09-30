@@ -9,7 +9,7 @@ import {
   Alert,
   Linking,
   SafeAreaView,
-  Platform
+  Platform,
 } from "react-native";
 
 import {
@@ -25,17 +25,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigations/RootNavigator";
 import { Header } from "../components/Header";
+import { useAuth } from "../hooks/useAuth";
 
 interface SettingsProps {
   onBack: () => void;
   onLogout?: () => void;
-  userProfile?: {
-    email: string;
-    display_name: string;
-  };
 }
 
-export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
+export const Settings = ({ onBack, onLogout }: SettingsProps) => {
+  const { user, signOut } = useAuth();
   const [feedback, setFeedback] = useState("");
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -50,12 +48,17 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
 
   const submitFeedback = () => {
     if (!feedback.trim()) return;
-    Alert.alert("Geri Bildirim Gönderildi", "Değerli geri bildiriminiz için teşekkürler!");
+    Alert.alert("Geri Bildirim Gönderildi");
     setFeedback("");
   };
 
-  const handleLogout = () => {
-    onLogout?.();
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      onLogout?.();
+    } catch (error) {
+      Alert.alert("Hata", "Çıkış işlemi başarısız oldu.");
+    }
   };
 
   const openUrl = async (url: string) => {
@@ -67,10 +70,14 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
     }
   };
 
+  // Kullanıcı bilgilerini al
+  const userEmail = user?.email || "";
+  const userName = user?.user_metadata?.full_name || userEmail.split("@")[0] || "";
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Header title="Ayarlar" onBack={onBack} showLogo={false} />
+        <Header title="Ayarlar" onBack={onBack}  />
 
         <ScrollView
           contentContainerStyle={styles.content}
@@ -87,7 +94,7 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
               <Text style={styles.label}>E-posta Adresi</Text>
               <TextInput
                 style={[styles.input, styles.disabledInput]}
-                value={userProfile?.email || ""}
+                value={userEmail}
                 editable={false}
               />
             </View>
@@ -95,7 +102,7 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
               <Text style={styles.label}>Görünen Ad</Text>
               <TextInput
                 style={[styles.input, styles.disabledInput]}
-                value={userProfile?.display_name || ""}
+                value={userName}
                 editable={false}
               />
             </View>
@@ -122,11 +129,7 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
             <TouchableOpacity
               onPress={submitFeedback}
               disabled={!feedback.trim()}
-              style={[
-                styles.button,
-                Platform.OS === "ios" && { overflow: "hidden" },
-                !feedback.trim() && styles.buttonDisabled
-              ]}
+              style={[styles.button, !feedback.trim() && styles.buttonDisabled]}
             >
               <Text style={styles.buttonText}>Geri Bildirim Gönder</Text>
             </TouchableOpacity>
@@ -200,10 +203,7 @@ export const Settings = ({ onBack, onLogout, userProfile }: SettingsProps) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
+  safeArea: { flex: 1, backgroundColor: "#000" },
   container: { flex: 1, backgroundColor: "#000" },
   content: { padding: 16, paddingTop: Platform.OS === "ios" ? 20 : 56 },
 
@@ -219,26 +219,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
+  sectionHeader: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
 
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#F2AE30",
-    marginLeft: 6,
-  },
+  sectionTitle: { fontSize: 18, fontWeight: "600", color: "#F2AE30", marginLeft: 6 },
 
   inputGroup: { marginBottom: 16 },
 
-  label: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 6,
-  },
+  label: { fontSize: 14, color: "#666", marginBottom: 6 },
 
   input: {
     borderWidth: 1,
@@ -248,88 +235,46 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
     backgroundColor: "#000",
-    color: "#F2AE30",
+    color: "#CCC",
   },
 
-  disabledInput: {
-    backgroundColor: "#000",
-    color: "#888",
-  },
+  disabledInput: { backgroundColor: "#000", color: "#888" },
 
-  textarea: {
-    height: 100,
-    textAlignVertical: "top",
-  },
+  textarea: { height: 100, textAlignVertical: "top" },
 
-  button: {
-    backgroundColor: "#888",
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
+  button: { backgroundColor: "#888", paddingVertical: 14, borderRadius: 8, alignItems: "center" },
 
   buttonDisabled: { opacity: 0.5 },
- 
 
-  buttonText: {
-    color: "#CCC",
-    fontWeight: "600",
-    fontSize: 16,
-  },
+  buttonText: { color: "#CCC", fontWeight: "600", fontSize: 16 },
 
   outlineButton: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderWidth: 1,
-    borderColor:"#2e2e2e",
+    borderColor: "#2e2e2e",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 14,
     marginBottom: 12,
-    
   },
 
-  outlineButtonText: {
-    color: "#666",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+  outlineButtonText: { color: "#666", fontSize: 16, fontWeight: "600" },
 
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
+  infoRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
 
-  infoLabel: {
-    color: "#666",
-    fontSize: 14,
-  },
+  infoLabel: { color: "#666", fontSize: 14 },
 
-  infoValue: {
-    color: "#666",
-    fontSize: 14,
-    fontWeight: "500",
-  },
+  infoValue: { color: "#666", fontSize: 14, fontWeight: "500" },
 
-  dangerZone: {
-    borderColor: "#d9534f",
-    borderWidth: 1,
-  },
+  dangerZone: { borderColor: "#d9534f", borderWidth: 1 },
 
-  dangerTitle: {
-    color: "#d9534f",
-  },
+  dangerTitle: { color: "#d9534f" },
 
-  dangerButton: {
-    borderColor: "#d9534f",
-    marginBottom: 12,
-  },
+  dangerButton: { borderColor: "#d9534f", marginBottom: 12 },
 
-  dangerButtonText: {
-    color: "#d9534f",
-    fontWeight: "600",
-    fontSize: 16,
-  },
+  dangerButtonText: { color: "#d9534f", fontWeight: "600", fontSize: 16 },
 });
+
+

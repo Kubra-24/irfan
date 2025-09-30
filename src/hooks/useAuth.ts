@@ -10,20 +10,25 @@ export const useAuth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Session kontrolü
+    const fetchSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-    });
+    };
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    fetchSession();
+
+    // Auth state listener
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
     return () => {
-      subscription.unsubscribe();
+      listener.subscription.unsubscribe();
     };
   }, []);
 
@@ -62,6 +67,8 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       toast({ title: "Çıkış Yapıldı", description: "Güvenle çıkış yaptınız." });
+      setUser(null);
+      setSession(null);
     } catch (error: any) {
       toast({ title: "Çıkış Hatası", description: error.message });
     }

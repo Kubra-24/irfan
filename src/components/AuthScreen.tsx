@@ -62,7 +62,7 @@ export const AuthScreen = ({ navigation }: any) => {
       const { error } = isSignUp ? await signUp(email, password) : await signIn(email, password);
 
       if (!error) {
-        navigation.navigate("WelcomePrompts");
+        navigation.navigate("Chat");
       } else {
         const msg = (error.message || "").toLowerCase();
         let errorMessage = "Bir hata oluştu";

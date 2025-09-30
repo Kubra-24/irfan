@@ -73,7 +73,7 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
 
         {showLogo && (
           <Animated.View style={[styles.logoContainer, { opacity: logoOpacity }]}>
-            <Text style={styles.logoTitle}>إرفان</Text>
+          
             <View style={styles.subtitleWrapper}>
        
               <Text style={styles.logoSubtitle}>Yapay Zekâ Destekli İslami Rehber</Text>
@@ -121,14 +121,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: "center",
   },
-  logoTitle: {
-    fontSize: 35,
-    fontWeight: "bold",
-    color: "#F2AE30",
-    fontFamily: "Arial",
-    marginTop: 20,
-    fontStyle: "italic",
-  },
+  
   subtitleWrapper: {
     position: "relative",
     marginTop: 40,
